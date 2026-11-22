@@ -1,11 +1,11 @@
 {
-  "appVersion": "1.0.9",
+  "appVersion": "1.1.0",
   "apkUrl": "",
   "releaseNotes": "Osvežena lista beogradskih saobraćajnih kamera.",
   "cameras": [
     {
       "id": 0,
-      "name": "Brankov Most",
+      "name": "Brankov Most (Test)",
       "url": "https://streamer.devnet.rs/hls/brankov.m3u8",
       "lat": 44.8147,
       "lng": 20.4485
