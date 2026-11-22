@@ -1,6 +1,6 @@
 {
-  "appVersion": "1.1.1",
-  "apkUrl": "[https://github.com/petrovichpetar/belcam/releases](https://github.com/petrovichpetar/belcam/releases)",
+  "appVersion": "1.1.0",
+  "apkUrl": "",
   "releaseNotes": "Osvežena lista beogradskih saobraćajnih kamera.",
   "cameras": [
     {
