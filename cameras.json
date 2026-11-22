@@ -5,7 +5,7 @@
   "cameras": [
     {
       "id": 0,
-      "name": "Brankov Most (Test)",
+      "name": "Brankov Most",
       "url": "https://streamer.devnet.rs/hls/brankov.m3u8",
       "lat": 44.8147,
       "lng": 20.4485
