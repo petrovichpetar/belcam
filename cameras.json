@@ -186,125 +186,123 @@
       "lng": 20.4368
     },
     {
-      "id": 31,
+      "id": 26,
       "name": "Jurija Gagarina 1",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/jur1-gargarina/playlist.m3u8",
       "lat": 44.8065,
       "lng": 20.415
     },
     {
-      "id": 32,
+      "id": 27,
       "name": "Jurija Gagarina 2",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/jur2-gargarina/playlist.m3u8",
       "lat": 44.8032,
       "lng": 20.3855
     },
     {
-      "id": 26,
+      "id": 28,
       "name": "Most na Adi (Konak)",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/adamost-mkonak/playlist.m3u8",
       "lat": 44.7912,
       "lng": 20.4342
     },
     {
-      "id": 27,
+      "id": 29,
       "name": "Zmaj pumpa",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/zmaj-pumpa/playlist.m3u8",
       "lat": 44.8325,
       "lng": 20.3782
     },
     {
-      "id": 28,
+      "id": 30,
       "name": "Pošta (Lakat)",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/posta-lakat/playlist.m3u8",
       "lat": 44.8535,
       "lng": 20.3665
     },
     {
-      "id": 29,
+      "id": 31,
       "name": "Rakovica",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/rakovica/playlist.m3u8",
       "lat": 44.7458,
       "lng": 20.4436
     },
     {
-      "id": 30,
+      "id": 32,
       "name": "Bubanj potok",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/bubanj-potok/playlist.m3u8",
       "lat": 44.7315,
       "lng": 20.5422
     },
     {
-      "id": 31,
+      "id": 33,
       "name": "Petlja Dobanovci",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/dobanovci-petlja/playlist.m3u8",
       "lat": 44.8355,
       "lng": 20.2385
     },
     {
-      "id": 32,
+      "id": 34,
       "name": "Južni bulevar",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/juzni_bulevar/playlist.m3u8",
       "lat": 44.7938,
       "lng": 20.4785
     },
- {
-      "id": 33,
+    {
+      "id": 35,
       "name": "Pijaca cveća - Krnjača",
       "url": "https://cam.okradio.net/streams/kamera1/stream.m3u8",
-      "lat": 44.8166,
-      "lng": 20.4764
-}
+      "lat": 44.8355,
+      "lng": 20.4915
+    },
     {
-      "id": 34,
+      "id": 36,
       "name": "Krnjača OMV pumpa",
       "url": "https://cam.okradio.net/streams/kamera2/stream.m3u8",
       "lat": 44.8412,
       "lng": 20.4913
     },
     {
-      "id": 35,
+      "id": 37,
       "name": "Krnjača (ka gradu)",
       "url": "https://cam.okradio.net/streams/kamera3/stream.m3u8",
       "lat": 44.8630,
       "lng": 20.4765
     },
     {
-      "id": 36,
+      "id": 38,
       "name": "Krnjača - Metro",
       "url": "https://cam.okradio.net/streams/kamera4/stream.m3u8",
-  "lat": 44.842602,
-  "lng": 20.487000
+      "lat": 44.842602,
+      "lng": 20.487000
     },
     {
-      "id": 37,
+      "id": 39,
       "name": "Bulevar despota Stefana (Cvijićeva)",
       "url": "https://streamer.devnet.rs/hls/despotastefana.m3u8",
       "lat": 44.8166,
       "lng": 20.4764
     },
     {
-      "id": 42,
-      "name": "Zrenjaninski put (restoran Bitolj",
+      "id": 40,
+      "name": "Zrenjaninski put (restoran Bitolj)",
       "url": "https://cam.okradio.net/streams/kamera5/stream.m3u8",
-  "lat": 44.8525,
-  "lng": 20.4785
+      "lat": 44.8525,
+      "lng": 20.4785
     },
     {
-      "id": 43,
+      "id": 41,
       "name": "Zrenjaninski put – Borča (Roda)",
       "url": "https://cam.okradio.net/streams/kamera6/stream.m3u8",
-  "lat": 44.8810,
-  "lng": 20.4740
+      "lat": 44.8810,
+      "lng": 20.4740
     },
     {
-      "id": 44,
+      "id": 42,
       "name": "Zrenjaninski put (raskrsnica Borča - Ovča)",
       "url": "https://cam.okradio.net/streams/kamera7/stream.m3u8",
       "lat": 44.8878,
       "lng": 20.4612
-     }
+    }
   ]
 }
-
-
