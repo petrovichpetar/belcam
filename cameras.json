@@ -250,56 +250,56 @@
     },
  {
       "id": 33,
-      "name": “Pijaca cveća - Krnjača”,
+      "name": "Pijaca cveća - Krnjača",
       "url": "https://cam.okradio.net/streams/kamera1/stream.m3u8",
       "lat": 44.8166,
       "lng": 20.4764
 }
     {
       "id": 34,
-      "name": "Krnjača OMV pumpa,
+      "name": "Krnjača OMV pumpa",
       "url": "https://cam.okradio.net/streams/kamera2/stream.m3u8",
       "lat": 44.8412,
       "lng": 20.4913
     },
     {
       "id": 35,
-      "name": "Krnjača (ka gradu)“,
+      "name": "Krnjača (ka gradu)",
       "url": "https://cam.okradio.net/streams/kamera3/stream.m3u8",
       "lat": 44.8630,
       "lng": 20.4765
     },
     {
       "id": 36,
-      "name": “Krnjača - Metro”,
+      "name": "Krnjača - Metro",
       "url": "https://cam.okradio.net/streams/kamera4/stream.m3u8",
   "lat": 44.842602,
   "lng": 20.487000
     },
     {
       "id": 37,
-      "name": "Bulevar despota Stefana (Cvijićeva)”,
+      "name": "Bulevar despota Stefana (Cvijićeva)",
       "url": "https://streamer.devnet.rs/hls/despotastefana.m3u8",
       "lat": 44.8166,
       "lng": 20.4764
     },
     {
       "id": 42,
-      "name": “Zrenjaninski put (restoran Bitolj",
+      "name": "Zrenjaninski put (restoran Bitolj",
       "url": "https://cam.okradio.net/streams/kamera5/stream.m3u8",
   "lat": 44.8525,
   "lng": 20.4785
     },
     {
       "id": 43,
-      "name": “Zrenjaninski put – Borča (Roda)”,
+      "name": "Zrenjaninski put – Borča (Roda)",
       "url": "https://cam.okradio.net/streams/kamera6/stream.m3u8",
   "lat": 44.8810,
   "lng": 20.4740
     },
     {
       "id": 44,
-      "name": “Zrenjaninski put (raskrsnica Borča - Ovča)",
+      "name": "Zrenjaninski put (raskrsnica Borča - Ovča)",
       "url": "https://cam.okradio.net/streams/kamera7/stream.m3u8",
       "lat": 44.8878,
       "lng": 20.4612
