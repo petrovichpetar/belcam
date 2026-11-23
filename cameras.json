@@ -26,223 +26,258 @@
     },
     {
       "id": 3,
+      "name": "Krnjača – Pančevački most ",
+      "url": "https://rtsp.uzivokamere.com/krnjaca/index.m3u8",
+      "lat": 44.8323,
+      "lng": 20.4851
+    },
+    {
+      "id": 4,
+      "name": "Krnjača – Zrenjaninski put",
+      "url": "https://rtsp.uzivokamere.com/krnjaca2/main_stream.m3u8",
+      "lat": 44.8436,
+      "lng": 20.4878
+    },
+    {
+      "id": 5,
+      "name": "Krnjača – Pančevački put",
+      "url": "https://rtsp.uzivokamere.com/krnjaca3/main_stream.m3u8",
+      "lat": 44.8375,
+      "lng": 20.5065
+    },
+    {
+      "id": 6,
+      "name": "Borča – Zrenjaninski put",
+      "url": "https://rtsp.uzivokamere.com/borca/index.m3u8",
+      "lat": 44.8722,
+      "lng": 20.4567
+    },
+    {
+      "id": 7,
+      "name": "Bulevar despota Stefana (Cvijićeva)”,
+      "url": "https://naxi.uzivokamere.com/despotastefana/index.m3u8",
+      "lat": 44.8166,
+      "lng": 20.4764
+    },
+    {
+      "id": 8,
       "name": "Autokomanda",
       "url": "https://streamer.devnet.rs/hls/autokomanda.m3u8",
       "lat": 44.7897,
       "lng": 20.4664
     },
     {
-      "id": 4,
+      "id": 9,
       "name": "Genex Kula",
       "url": "https://streamer.devnet.rs/hls/genex.m3u8",
       "lat": 44.8203,
       "lng": 20.4046
     },
     {
-      "id": 5,
+      "id": 10,
       "name": "Trg Republike",
       "url": "https://streamer.devnet.rs/hls/trgrepublike.m3u8",
       "lat": 44.8162,
       "lng": 20.4605
     },
     {
-      "id": 6,
+      "id": 11,
       "name": "Trg Slavija",
       "url": "https://streamer.devnet.rs/hls/slavija.m3u8",
       "lat": 44.8024,
       "lng": 20.4663
     },
     {
-      "id": 7,
+      "id": 12,
       "name": "Bulevar Mihaila Pupina",
       "url": "https://streamer.devnet.rs/hls/pupina.m3u8",
       "lat": 44.8155,
       "lng": 20.4361
     },
     {
-      "id": 8,
+      "id": 13,
       "name": "Trg Nikole Pašića",
       "url": "https://streamer.devnet.rs/hls/trgnikole.m3u8",
       "lat": 44.8117,
       "lng": 20.4633
     },
     {
-      "id": 9,
+      "id": 14,
       "name": "Most na Adi",
       "url": "https://streamer.devnet.rs/hls/ada.m3u8",
       "lat": 44.7958,
       "lng": 20.4272
     },
     {
-      "id": 10,
+      "id": 15,
       "name": "Savski Trg",
       "url": "https://streamer.devnet.rs/hls/zeleznicka.m3u8",
       "lat": 44.8083,
       "lng": 20.4566
     },
     {
-      "id": 11,
+      "id": 16,
       "name": "Plavi Most",
       "url": "https://streamer.devnet.rs/hls/plavimost.m3u8",
       "lat": 44.7834,
       "lng": 20.5032
     },
     {
-      "id": 12,
+      "id": 17,
       "name": "Bogoslovija",
       "url": "https://streamer.devnet.rs/hls/bogoslovija.m3u8",
       "lat": 44.8142,
       "lng": 20.4914
     },
     {
-      "id": 13,
+      "id": 18,
       "name": "Nemanjina",
       "url": "https://streamer.devnet.rs/hls/nemanjina.m3u8",
       "lat": 44.8058,
       "lng": 20.4614
     },
     {
-      "id": 14,
+      "id": 19,
       "name": "Jurija Gagarina",
       "url": "https://streamer.devnet.rs/hls/gagarina.m3u8",
       "lat": 44.8045,
       "lng": 20.395
     },
     {
-      "id": 15,
+      "id": 20,
       "name": "Takovska",
       "url": "https://streamer.devnet.rs/hls/takovska.m3u8",
       "lat": 44.8113,
       "lng": 20.4682
     },
     {
-      "id": 16,
+      "id": 21,
       "name": "Opština Novi Beograd",
       "url": "https://streamer.devnet.rs/hls/opstinanbg.m3u8",
       "lat": 44.8239,
       "lng": 20.4119
     },
     {
-      "id": 17,
+      "id": 22,
       "name": "Vukov Spomenik",
       "url": "https://streamer.devnet.rs/hls/vuk.m3u8",
       "lat": 44.8052,
       "lng": 20.4777
     },
     {
-      "id": 18,
+      "id": 23,
       "name": "Nova Galenika",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/posta-lakat/playlist.m3u8",
       "lat": 44.8555,
       "lng": 20.3642
     },
     {
-      "id": 19,
+      "id": 24,
       "name": "Kneza Miloša",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/london-1/playlist.m3u8",
       "lat": 44.8087,
       "lng": 20.4638
     },
     {
-      "id": 20,
+      "id": 25,
       "name": "Kralja Milana",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/london-2/playlist.m3u8",
       "lat": 44.8082,
       "lng": 20.4644
     },
     {
-      "id": 21,
+      "id": 26,
       "name": "Poštanska štedionica",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/postanska-stedionica/playlist.m3u8",
       "lat": 44.8129,
       "lng": 20.4754
     },
     {
-      "id": 22,
+      "id": 27,
       "name": "Autokomanda (Jug)",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/autokomanda/playlist.m3u8",
       "lat": 44.7885,
       "lng": 20.4675
     },
     {
-      "id": 23,
+      "id": 28,
       "name": "BIP pivara",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/bip-pivara/playlist.m3u8",
       "lat": 44.7972,
       "lng": 20.4533
     },
     {
-      "id": 24,
+      "id": 29,
       "name": "Centar Sava",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/camera-sc/playlist.m3u8",
       "lat": 44.8082,
       "lng": 20.4316
     },
     {
-      "id": 25,
+      "id": 30,
       "name": "Ušće",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/sc-usce/playlist.m3u8",
       "lat": 44.8165,
       "lng": 20.4368
     },
     {
-      "id": 26,
+      "id": 31,
       "name": "Jurija Gagarina 1",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/jur1-gargarina/playlist.m3u8",
       "lat": 44.8065,
       "lng": 20.415
     },
     {
-      "id": 27,
+      "id": 32,
       "name": "Jurija Gagarina 2",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/jur2-gargarina/playlist.m3u8",
       "lat": 44.8032,
       "lng": 20.3855
     },
     {
-      "id": 28,
+      "id": 33,
       "name": "Most na Adi (Konak)",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/adamost-mkonak/playlist.m3u8",
       "lat": 44.7912,
       "lng": 20.4342
     },
     {
-      "id": 29,
+      "id": 34,
       "name": "Zmaj pumpa",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/zmaj-pumpa/playlist.m3u8",
       "lat": 44.8325,
       "lng": 20.3782
     },
     {
-      "id": 30,
+      "id": 35,
       "name": "Pošta (Lakat)",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/posta-lakat/playlist.m3u8",
       "lat": 44.8535,
       "lng": 20.3665
     },
     {
-      "id": 31,
+      "id": 36,
       "name": "Rakovica",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/rakovica/playlist.m3u8",
       "lat": 44.7458,
       "lng": 20.4436
     },
     {
-      "id": 32,
+      "id": 37,
       "name": "Bubanj potok",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/bubanj-potok/playlist.m3u8",
       "lat": 44.7315,
       "lng": 20.5422
     },
     {
-      "id": 33,
+      "id": 38,
       "name": "Petlja Dobanovci",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/dobanovci-petlja/playlist.m3u8",
       "lat": 44.8355,
       "lng": 20.2385
     },
     {
-      "id": 34,
+      "id": 39,
       "name": "Južni bulevar",
       "url": "https://srbija-nadlanu.ott.solutions/srbija-nadlanu/juzni_bulevar/playlist.m3u8",
       "lat": 44.7938,
@@ -250,3 +285,4 @@
     }
   ]
 }
+99999999999999999999999
