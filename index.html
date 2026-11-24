@@ -83,7 +83,7 @@
             align-items: center;
             justify-content: center;
             padding: calc(60px + var(--safe-top)) 40px calc(60px + var(--safe-bottom)) 40px;
-            transition: opacity 0.55s linear, visibility 0.55s linear;
+            transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.45s ease;
         }
         #splash-screen.hidden {
             opacity: 0;
@@ -96,7 +96,7 @@
             align-items: center;
             justify-content: center;
             gap: 14px;
-            animation: splashPop 0.55s linear forwards;
+            animation: splashPop 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
         @keyframes splashPop {
             0% {
@@ -929,7 +929,28 @@
             animation: smoothScreenFade 0.36s cubic-bezier(0.32, 0.72, 0.25, 1) forwards;
         }
         #orientation-veil {
-            display: none !important;
+            position: fixed;
+            inset: 0;
+            z-index: 9500;
+            background: rgba(24, 26, 30, 0.36);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transition: opacity 0.28s cubic-bezier(0.32, 0.72, 0.25, 1), visibility 0.28s cubic-bezier(0.32, 0.72, 0.25, 1);
+        }
+        #orientation-veil.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        #flip-stage.is-rotating {
+            transition: transform 0.36s cubic-bezier(0.32, 0.72, 0.25, 1), opacity 0.36s cubic-bezier(0.32, 0.72, 0.25, 1);
+            transform: scale(0.975);
+            opacity: 0.78;
+        }
+        #top-bar {
+            transition: height 0.32s cubic-bezier(0.32, 0.72, 0.25, 1), padding 0.32s cubic-bezier(0.32, 0.72, 0.25, 1);
         }
 
         .video-frame {
@@ -947,7 +968,7 @@
             overflow: hidden;
             transform-origin: 50% 50%;
             -webkit-transform-origin: 50% 50%;
-            transition: border-radius 0.22s linear;
+            transition: width 0.34s cubic-bezier(0.32, 0.72, 0.25, 1), height 0.34s cubic-bezier(0.32, 0.72, 0.25, 1), max-width 0.34s cubic-bezier(0.32, 0.72, 0.25, 1), max-height 0.34s cubic-bezier(0.32, 0.72, 0.25, 1), border-radius 0.28s cubic-bezier(0.32, 0.72, 0.25, 1);
         }
 
         .video-frame.is-fullscreen {
@@ -2016,15 +2037,30 @@
     let orientationTimer = null;
 
     function handleOrientationTransition() {
+        const stage = document.getElementById('flip-stage');
+        const veil = document.getElementById('orientation-veil');
+        if (stage) stage.classList.add('is-rotating');
+        if (veil) veil.classList.add('active');
+
         if (mapReady && map) {
             map.invalidateSize(false);
         }
+
         clearTimeout(orientationTimer);
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                if (stage) stage.classList.remove('is-rotating');
+                if (veil) veil.classList.remove('active');
+            });
+        });
+
         orientationTimer = setTimeout(() => {
+            if (stage) stage.classList.remove('is-rotating');
+            if (veil) veil.classList.remove('active');
             if (mapReady && map) {
-                map.invalidateSize(false);
+                map.invalidateSize(true);
             }
-        }, 300);
+        }, 360);
     }
 
     if (screen.orientation && screen.orientation.addEventListener) {
