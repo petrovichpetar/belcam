@@ -299,6 +299,21 @@
             transition: background-color 0.35s var(--glide-ease);
         }
 
+        /* Kada je video u fullscreen-u, oslobodi 3D stacking context da position:fixed pokrije ceo ekran */
+        body.video-is-fullscreen #flip-stage,
+        body.video-is-fullscreen #player-view {
+            perspective: none !important;
+            -webkit-perspective: none !important;
+            transform-style: flat !important;
+            -webkit-transform-style: flat !important;
+            transform: none !important;
+            animation: none !important;
+            overflow: visible !important;
+        }
+        body.video-is-fullscreen #top-bar {
+            z-index: 10 !important;
+        }
+
         #flip-stage.is-animating {
             background: var(--ios-flip-bg);
         }
@@ -1106,15 +1121,30 @@
 
         .video-frame.is-fullscreen {
             position: fixed !important;
-            inset: 0 !important;
-            width: 100vw !important;
-            height: 100vh !important;
+            top: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            bottom: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
             max-width: none !important;
+            max-height: none !important;
             aspect-ratio: auto !important;
             border: none !important;
             border-radius: 0 !important;
             z-index: 3000 !important;
             background: #000000 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+        }
+        .video-frame.is-fullscreen video {
+            width: 100% !important;
+            height: 100% !important;
+            max-width: 100% !important;
+            max-height: 100% !important;
+            object-fit: contain !important;
+            display: block;
         }
         .video-frame video {
             width: 100%;
@@ -1247,8 +1277,10 @@
             transition: color 0.24s var(--glide-ease);
         }
         .video-frame.is-fullscreen .fullscreen-toggle-btn {
-            bottom: calc(36px + var(--safe-bottom));
-            right: calc(22px + env(safe-area-inset-right, 0px));
+            position: fixed;
+            bottom: calc(20px + var(--safe-bottom));
+            right: calc(18px + var(--safe-right));
+            z-index: 3010;
             height: 38px;
             padding: 0 14px;
         }
@@ -2197,6 +2229,11 @@
     let orientationTimer = null;
 
     function handleOrientationTransition() {
+        const wrapper = document.getElementById('video-wrapper');
+        if (wrapper && wrapper.classList.contains('is-fullscreen')) {
+            return;
+        }
+
         const stage = document.getElementById('flip-stage');
         if (stage) {
             stage.classList.remove('is-rotating');
@@ -2481,6 +2518,7 @@
         triggerFlipAnimation(wrapper, 'fs-out');
 
         fsFlipTimer = setTimeout(() => {
+            document.body.classList.add('video-is-fullscreen');
             wrapper.classList.add('is-fullscreen');
             triggerVideoFsFade(wrapper);
             updateFullscreenBtnIcon(true);
@@ -2500,6 +2538,7 @@
         clearTimeout(fsFlipTimer);
 
         const applyExit = () => {
+            document.body.classList.remove('video-is-fullscreen');
             if (wrapper) {
                 const wasFs = wrapper.classList.contains('is-fullscreen');
                 wrapper.classList.remove('is-fullscreen', 'fs-out');
@@ -2554,6 +2593,7 @@
         if (!document.fullscreenElement) {
             const wrapper = document.getElementById('video-wrapper');
             if (wrapper && wrapper.classList.contains('is-fullscreen')) {
+                document.body.classList.remove('video-is-fullscreen');
                 wrapper.classList.remove('is-fullscreen');
                 triggerVideoFsFade(wrapper);
                 updateFullscreenBtnIcon(false);
