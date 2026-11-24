@@ -807,17 +807,21 @@
             animation: smoothScreenFade 0.32s linear forwards;
         }
         #orientation-veil {
-            position: fixed;
-            inset: 0;
-            background: #1a1c1f;
-            z-index: 2800;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.28s ease-out;
+            display: none;
         }
-        #orientation-veil.active {
-            opacity: 1;
-            transition: none;
+        html.is-rotating,
+        html.is-rotating body,
+        html.is-rotating #top-bar,
+        html.is-rotating #flip-stage,
+        html.is-rotating .view,
+        html.is-rotating .video-frame,
+        html.is-rotating .player-nav-row,
+        html.is-rotating .player-bottom-controls,
+        html.is-rotating .nav-btn,
+        html.is-rotating .step-cam-btn,
+        html.is-rotating .refresh-stream-btn {
+            transition: none !important;
+            animation: none !important;
         }
 
         .video-frame {
@@ -835,9 +839,6 @@
             overflow: hidden;
             transform-origin: 50% 50%;
             -webkit-transform-origin: 50% 50%;
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            will-change: transform, opacity;
             transition: border-radius 0.22s linear;
         }
 
@@ -1235,7 +1236,7 @@
             .video-frame:not(.is-fullscreen) {
                 width: auto;
                 max-width: 100%;
-                height: calc(100dvh - var(--header-h) - var(--safe-top) - var(--safe-bottom) - 96px);
+                height: calc(100% - 84px);
                 max-height: 260px;
                 aspect-ratio: 16 / 10;
                 border-width: 2px;
@@ -1456,7 +1457,7 @@
                 </div>
                 <div class="info-row">
                     <span class="info-key">Verzija aplikacije:</span>
-                    <span class="info-val" id="info-app-version">1.1.0</span>
+                    <span class="info-val" id="info-app-version">1.1.2</span>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Lista kamera:</span>
@@ -1475,7 +1476,7 @@
     </div>
 
 <script>
-    const APP_VERSION = "1.1.0";
+    const APP_VERSION = "1.1.2";
     // Ovde nalepi svoj GitHub link (npr. https://korisnickoime.github.io/belcam/cameras.json)
     const REMOTE_CONFIG_URL = "./cameras.json";
 
@@ -1811,8 +1812,8 @@
         incomingEl.style.zIndex = '3';
 
         const timing = {
-            duration: 520,
-            easing: 'cubic-bezier(0.38, 0.0, 0.22, 1)',
+            duration: 760,
+            easing: 'linear',
             fill: 'forwards'
         };
 
@@ -1902,32 +1903,31 @@
     }
 
     let lastIsLandscape = window.innerWidth > window.innerHeight;
-    let orientationVeilTimer = null;
+    let orientationTimer = null;
 
-    function triggerOrientationFade() {
-        const veil = document.getElementById('orientation-veil');
-        if (!veil) return;
-        clearTimeout(orientationVeilTimer);
-        veil.classList.add('active');
-        orientationVeilTimer = setTimeout(() => {
-            requestAnimationFrame(() => {
-                veil.classList.remove('active');
-            });
+    function handleOrientationTransition() {
+        document.documentElement.classList.add('is-rotating');
+        if (mapReady && map) {
+            map.invalidateSize(false);
+        }
+        clearTimeout(orientationTimer);
+        orientationTimer = setTimeout(() => {
+            document.documentElement.classList.remove('is-rotating');
             if (mapReady && map) {
                 map.invalidateSize(false);
             }
-        }, 160);
+        }, 420);
     }
 
     if (screen.orientation && screen.orientation.addEventListener) {
         screen.orientation.addEventListener('change', () => {
             lastIsLandscape = window.innerWidth > window.innerHeight;
-            triggerOrientationFade();
+            handleOrientationTransition();
         });
     } else {
         window.addEventListener('orientationchange', () => {
             lastIsLandscape = window.innerWidth > window.innerHeight;
-            triggerOrientationFade();
+            handleOrientationTransition();
         });
     }
 
@@ -1935,7 +1935,7 @@
         const isLandscape = window.innerWidth > window.innerHeight;
         if (isLandscape !== lastIsLandscape) {
             lastIsLandscape = isLandscape;
-            triggerOrientationFade();
+            handleOrientationTransition();
         }
     });
 
@@ -2169,12 +2169,14 @@
         const outDeg = direction > 0 ? '-90deg' : '90deg';
         const inDeg = direction > 0 ? '90deg' : '-90deg';
 
+        wrapper.style.willChange = 'transform, opacity';
+
         const outAnim = wrapper.animate([
             { transform: 'translate3d(0,0,0) rotateY(0deg) scale(1)', opacity: 1 },
-            { transform: 'translate3d(0,0,-30px) rotateY(' + outDeg + ') scale(0.95)', opacity: 0.85 }
+            { transform: 'translate3d(0,0,-30px) rotateY(' + outDeg + ') scale(0.96)', opacity: 0.85 }
         ], {
-            duration: 240,
-            easing: 'ease-in',
+            duration: 340,
+            easing: 'linear',
             fill: 'forwards'
         });
 
@@ -2184,11 +2186,11 @@
             if (activeCamAnim !== outAnim) return;
             openCamera(nextCamId, false);
             const inAnim = wrapper.animate([
-                { transform: 'translate3d(0,0,-30px) rotateY(' + inDeg + ') scale(0.95)', opacity: 0.85 },
+                { transform: 'translate3d(0,0,-30px) rotateY(' + inDeg + ') scale(0.96)', opacity: 0.85 },
                 { transform: 'translate3d(0,0,0) rotateY(0deg) scale(1)', opacity: 1 }
             ], {
-                duration: 260,
-                easing: 'ease-out',
+                duration: 340,
+                easing: 'linear',
                 fill: 'forwards'
             });
             activeCamAnim = inAnim;
@@ -2198,9 +2200,12 @@
                 try { activeCamAnim.cancel(); } catch (e) {}
                 activeCamAnim = null;
             }
+            wrapper.style.willChange = 'auto';
             wrapper.style.transform = '';
             wrapper.style.opacity = '';
-        }).catch(() => {});
+        }).catch(() => {
+            wrapper.style.willChange = 'auto';
+        });
     }
 
     // --- FULLSCREEN PRIKAZ VIDEA (NATIVE + WEBVIEW FALLBACK) ---
@@ -2730,8 +2735,8 @@
         });
     }
 
-    // Uklanjanje splash screen-a nakon 1.6s
-    setTimeout(hideSplashScreen, 1600);
+    // Uklanjanje splash screen-a nakon 2.5s
+    setTimeout(hideSplashScreen, 2500);
 </script>
 </body>
 </html>
