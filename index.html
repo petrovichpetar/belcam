@@ -543,21 +543,20 @@
             animation: cardFlipInPrev var(--flip-half) var(--flip-ease) forwards;
         }
 
-        /* Mirni dvostrani 3D flip pri promeni orijentacije uređaja */
-        @keyframes orientation3DFlip {
+        /* Jednokratni mirni prelaz pri promeni orijentacije uređaja */
+        @keyframes orientationGlide {
             0% {
-                transform: translate3d(0, 0, -60px) rotateY(-88deg);
-                opacity: 0.4;
+                opacity: 0.55;
+                transform: scale(0.985);
             }
             100% {
-                transform: translate3d(0, 0, 0) rotateY(0deg);
                 opacity: 1;
+                transform: scale(1);
             }
         }
         #flip-stage.is-rotating {
-            background: var(--ios-flip-bg);
             will-change: transform, opacity;
-            animation: orientation3DFlip 0.64s var(--flip-ease) forwards;
+            animation: orientationGlide 0.34s var(--glide-ease) forwards;
         }
 
         /* --- LISTA KAMERA --- */
@@ -2225,10 +2224,14 @@
         }
     }
 
-    let lastIsLandscape = window.innerWidth > window.innerHeight;
+    const orientationQuery = window.matchMedia('(orientation: landscape)');
+    let lastIsLandscape = orientationQuery.matches;
     let orientationTimer = null;
 
-    function handleOrientationTransition() {
+    function handleOrientationTransition(isLandscape) {
+        if (isLandscape === lastIsLandscape) return;
+        lastIsLandscape = isLandscape;
+
         const wrapper = document.getElementById('video-wrapper');
         if (wrapper && wrapper.classList.contains('is-fullscreen')) {
             return;
@@ -2251,28 +2254,18 @@
             if (mapReady && map) {
                 map.invalidateSize(true);
             }
-        }, 650);
+        }, 360);
     }
 
-    if (screen.orientation && screen.orientation.addEventListener) {
-        screen.orientation.addEventListener('change', () => {
-            lastIsLandscape = window.innerWidth > window.innerHeight;
-            handleOrientationTransition();
+    if (orientationQuery.addEventListener) {
+        orientationQuery.addEventListener('change', (e) => {
+            handleOrientationTransition(e.matches);
         });
-    } else {
-        window.addEventListener('orientationchange', () => {
-            lastIsLandscape = window.innerWidth > window.innerHeight;
-            handleOrientationTransition();
+    } else if (orientationQuery.addListener) {
+        orientationQuery.addListener((e) => {
+            handleOrientationTransition(e.matches);
         });
     }
-
-    window.addEventListener('resize', () => {
-        const isLandscape = window.innerWidth > window.innerHeight;
-        if (isLandscape !== lastIsLandscape) {
-            lastIsLandscape = isLandscape;
-            handleOrientationTransition();
-        }
-    });
 
     window.addEventListener('popstate', () => {
         if (document.getElementById('info-modal').classList.contains('open')) {
