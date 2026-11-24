@@ -34,6 +34,11 @@
             --header-h: 48px;
             --accent: #f59e0b;
             --accent-dark: #d97706;
+            --ios-flip-bg: #586371;
+            --flip-duration: 0.78s;
+            --flip-half: 0.39s;
+            --flip-ease: cubic-bezier(0.28, 0.22, 0.72, 0.78);
+            --glide-ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
             --app-font: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
 
@@ -83,7 +88,7 @@
             align-items: center;
             justify-content: center;
             padding: calc(60px + var(--safe-top)) 40px calc(60px + var(--safe-bottom)) 40px;
-            transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.45s ease;
+            transition: opacity 0.6s var(--glide-ease), visibility 0.6s var(--glide-ease);
         }
         #splash-screen.hidden {
             opacity: 0;
@@ -96,12 +101,12 @@
             align-items: center;
             justify-content: center;
             gap: 14px;
-            animation: splashPop 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation: splashPop 0.65s var(--glide-ease) forwards;
         }
         @keyframes splashPop {
             0% {
                 opacity: 0;
-                transform: scale(0.9) translateY(8px);
+                transform: scale(0.94) translateY(6px);
             }
             100% {
                 opacity: 1;
@@ -143,13 +148,13 @@
             border: 2.5px solid rgba(245, 158, 11, 0.22);
             border-top-color: var(--accent);
             border-radius: 50%;
-            animation: splashSpin 0.85s linear infinite;
+            animation: splashSpin 0.95s linear infinite;
         }
         @keyframes splashSpin {
             to { transform: rotate(360deg); }
         }
 
-        /* --- GORNJA TRAKA (HEADER) --- */
+        /* --- GORNJA TRAKA (HEADER - MIRNA I STATIČNA TOKOM 3D FLIPA) --- */
         #top-bar {
             position: fixed;
             top: 0; left: 0; right: 0;
@@ -166,6 +171,7 @@
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             box-shadow: 0 2px 6px rgba(0,0,0,0.38);
+            transition: height 0.38s var(--glide-ease), padding 0.38s var(--glide-ease);
         }
 
         .top-left-slot {
@@ -193,7 +199,7 @@
             justify-content: center;
             gap: 4px;
             cursor: pointer;
-            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), background 0.22s ease;
+            transition: transform 0.22s var(--glide-ease), background 0.22s var(--glide-ease), opacity 0.28s var(--glide-ease), border-color 0.28s var(--glide-ease);
         }
         .nav-btn:active {
             transform: scale(0.96);
@@ -204,6 +210,24 @@
             border-color: var(--accent);
             background: linear-gradient(180deg, #3c4047 0%, #26292e 100%);
             box-shadow: inset 0 1px 4px rgba(0,0,0,0.65), 0 0 0 1px rgba(245, 158, 11, 0.25);
+        }
+        .nav-btn.is-hidden-slot {
+            opacity: 0;
+            pointer-events: none;
+            transform: scale(0.94);
+        }
+        @keyframes navSlotGlide {
+            0% {
+                opacity: 0.45;
+                transform: scale(0.94);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        .nav-btn.nav-glide {
+            animation: navSlotGlide 0.34s var(--glide-ease) forwards;
         }
 
         /* LOGO BelCam + INFO IKONICA */
@@ -223,6 +247,11 @@
             text-shadow: 0 -1px 1px rgba(0,0,0,0.65);
             user-select: none;
             cursor: pointer;
+            transition: transform 0.22s var(--glide-ease), opacity 0.22s var(--glide-ease);
+        }
+        .brand-logo:active {
+            transform: scale(0.97);
+            opacity: 0.88;
         }
         .brand-logo .bel { color: #ffffff; }
         .brand-logo .cam { color: var(--accent); }
@@ -243,7 +272,7 @@
             cursor: pointer;
             padding: 0;
             box-shadow: 0 1px 3px rgba(0,0,0,0.4);
-            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), background 0.22s ease;
+            transition: transform 0.22s var(--glide-ease), background 0.22s var(--glide-ease), color 0.22s var(--glide-ease);
         }
         .info-badge-btn:active {
             transform: scale(0.92);
@@ -251,19 +280,27 @@
             color: #1f2937;
         }
 
-        /* --- GLAVNI SADRŽAJ: STALNI FIKSNI iOS VIEWPORT SHELL BEZ REFLOW-A I GLIČEVA --- */
+        /* --- GLAVNI 3D FLIP STAGE (MIRNA, KONSTANTNA BRZINA KROZ CEO SISTEM) --- */
         #flip-stage {
             position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
+            top: calc(var(--header-h) + var(--safe-top));
+            left: 0;
+            right: 0;
+            bottom: 0;
             z-index: 1;
             background: #1a1c1f;
             overflow: hidden;
-            perspective: 1900px;
-            -webkit-perspective: 1900px;
-            perspective-origin: 50% calc(50% + (var(--header-h) + var(--safe-top)) / 2);
-            -webkit-perspective-origin: 50% calc(50% + (var(--header-h) + var(--safe-top)) / 2);
+            perspective: 1200px;
+            -webkit-perspective: 1200px;
+            perspective-origin: 50% 50%;
+            -webkit-perspective-origin: 50% 50%;
+            transform-style: preserve-3d;
+            -webkit-transform-style: preserve-3d;
+            transition: background-color 0.35s var(--glide-ease);
+        }
+
+        #flip-stage.is-animating {
+            background: var(--ios-flip-bg);
         }
 
         .view {
@@ -271,7 +308,7 @@
             inset: 0;
             width: 100%;
             height: 100%;
-            padding-top: calc(var(--header-h) + var(--safe-top));
+            padding-top: 0;
             padding-bottom: calc(20px + var(--safe-bottom));
             padding-left: var(--safe-left);
             padding-right: var(--safe-right);
@@ -282,11 +319,23 @@
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
-            transform-origin: 50% calc(50% + (var(--header-h) + var(--safe-top)) / 2);
-            -webkit-transform-origin: 50% calc(50% + (var(--header-h) + var(--safe-top)) / 2);
+            transform-origin: 50% 50%;
+            -webkit-transform-origin: 50% 50%;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
         }
+
+        /* Ravnomerni sloj senčenja tokom 3D rotacije bez trzanja */
+        .view::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: #0d1117;
+            pointer-events: none;
+            z-index: 900;
+            opacity: 0;
+        }
+
         .view.active {
             opacity: 1;
             visibility: visible;
@@ -294,16 +343,15 @@
             z-index: 2;
         }
 
-        /* Tokom 3D okreta: čista CSS GPU animacija oba pogleda bez sticky gliča */
         #flip-stage.is-animating .search-wrap {
             position: relative !important;
             top: 0 !important;
         }
+
         .view.flip-out-from-right,
         .view.flip-in-from-right,
         .view.flip-out-from-left,
         .view.flip-in-from-left {
-            opacity: 1 !important;
             visibility: visible !important;
             pointer-events: none !important;
             overflow: hidden !important;
@@ -313,120 +361,189 @@
             contain: paint;
         }
 
+        .view.flip-out-from-right::after,
+        .view.flip-out-from-left::after {
+            animation: iosShadeOut var(--flip-duration) var(--flip-ease) forwards;
+        }
+        .view.flip-in-from-right::after,
+        .view.flip-in-from-left::after {
+            animation: iosShadeIn var(--flip-duration) var(--flip-ease) forwards;
+        }
+
+        @keyframes iosShadeOut {
+            0%   { opacity: 0; }
+            50%  { opacity: 0.36; }
+            100% { opacity: 0.36; }
+        }
+        @keyframes iosShadeIn {
+            0%   { opacity: 0.36; }
+            50%  { opacity: 0.36; }
+            100% { opacity: 0; }
+        }
+
+        /* Flip s desna na levo (napred: Lista -> Mapa, Lista -> Plejer, Lista -> Omiljene) */
         @keyframes iosFlipOutRight {
             0% {
-                transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
+                transform: translate3d(0, 0, 0) rotateY(0deg);
                 opacity: 1;
             }
-            49.9% {
-                transform: translate3d(0, 0, 0) rotateY(-89.9deg) scale(0.96);
-                opacity: 0.92;
+            49.99% {
+                transform: translate3d(0, 0, -72px) rotateY(-89.99deg);
+                opacity: 1;
             }
             50% {
-                transform: translate3d(0, 0, 0) rotateY(-90.1deg) scale(0.96);
+                transform: translate3d(0, 0, -72px) rotateY(-90.01deg);
                 opacity: 0;
             }
             100% {
-                transform: translate3d(0, 0, 0) rotateY(-180deg) scale(1);
+                transform: translate3d(0, 0, 0) rotateY(-180deg);
                 opacity: 0;
             }
         }
         @keyframes iosFlipInRight {
             0% {
-                transform: translate3d(0, 0, 0) rotateY(180deg) scale(1);
+                transform: translate3d(0, 0, 0) rotateY(180deg);
                 opacity: 0;
             }
-            49.9% {
-                transform: translate3d(0, 0, 0) rotateY(90.1deg) scale(0.96);
+            49.99% {
+                transform: translate3d(0, 0, -72px) rotateY(90.01deg);
                 opacity: 0;
             }
             50% {
-                transform: translate3d(0, 0, 0) rotateY(89.9deg) scale(0.96);
-                opacity: 0.92;
+                transform: translate3d(0, 0, -72px) rotateY(89.99deg);
+                opacity: 1;
             }
             100% {
-                transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
+                transform: translate3d(0, 0, 0) rotateY(0deg);
                 opacity: 1;
             }
         }
+
+        /* Flip s leva na desno (nazad: Mapa -> Lista, Plejer -> Lista, Omiljene -> Lista) */
         @keyframes iosFlipOutLeft {
             0% {
-                transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
+                transform: translate3d(0, 0, 0) rotateY(0deg);
                 opacity: 1;
             }
-            49.9% {
-                transform: translate3d(0, 0, 0) rotateY(89.9deg) scale(0.96);
-                opacity: 0.92;
+            49.99% {
+                transform: translate3d(0, 0, -72px) rotateY(89.99deg);
+                opacity: 1;
             }
             50% {
-                transform: translate3d(0, 0, 0) rotateY(90.1deg) scale(0.96);
+                transform: translate3d(0, 0, -72px) rotateY(90.01deg);
                 opacity: 0;
             }
             100% {
-                transform: translate3d(0, 0, 0) rotateY(180deg) scale(1);
+                transform: translate3d(0, 0, 0) rotateY(180deg);
                 opacity: 0;
             }
         }
         @keyframes iosFlipInLeft {
             0% {
-                transform: translate3d(0, 0, 0) rotateY(-180deg) scale(1);
+                transform: translate3d(0, 0, 0) rotateY(-180deg);
                 opacity: 0;
             }
-            49.9% {
-                transform: translate3d(0, 0, 0) rotateY(-90.1deg) scale(0.96);
+            49.99% {
+                transform: translate3d(0, 0, -72px) rotateY(-90.01deg);
                 opacity: 0;
             }
             50% {
-                transform: translate3d(0, 0, 0) rotateY(-89.9deg) scale(0.96);
-                opacity: 0.92;
+                transform: translate3d(0, 0, -72px) rotateY(-89.99deg);
+                opacity: 1;
             }
             100% {
-                transform: translate3d(0, 0, 0) rotateY(0deg) scale(1);
+                transform: translate3d(0, 0, 0) rotateY(0deg);
                 opacity: 1;
             }
         }
 
         .view.flip-out-from-right {
-            animation: iosFlipOutRight 0.62s cubic-bezier(0.32, 0.72, 0.25, 1) forwards;
+            animation: iosFlipOutRight var(--flip-duration) var(--flip-ease) forwards;
         }
         .view.flip-in-from-right {
-            animation: iosFlipInRight 0.62s cubic-bezier(0.32, 0.72, 0.25, 1) forwards;
+            animation: iosFlipInRight var(--flip-duration) var(--flip-ease) forwards;
         }
         .view.flip-out-from-left {
-            animation: iosFlipOutLeft 0.62s cubic-bezier(0.32, 0.72, 0.25, 1) forwards;
+            animation: iosFlipOutLeft var(--flip-duration) var(--flip-ease) forwards;
         }
         .view.flip-in-from-left {
-            animation: iosFlipInLeft 0.62s cubic-bezier(0.32, 0.72, 0.25, 1) forwards;
+            animation: iosFlipInLeft var(--flip-duration) var(--flip-ease) forwards;
         }
 
-        /* Glatka rotacija video kartice u plejeru prilikom promene kamera */
-        @keyframes cardFlipNext {
+        /* Dvostrani 3D flip za promenu kamere u plejeru (Sledeća / Prethodna / Swipe) */
+        @keyframes cardFlipOutNext {
             0% {
-                opacity: 0.45;
-                transform: perspective(1700px) rotateY(28deg) scale(0.975);
+                transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg);
+                opacity: 1;
             }
             100% {
-                opacity: 1;
-                transform: perspective(1700px) rotateY(0deg) scale(1);
+                transform: perspective(1200px) translate3d(0, 0, -64px) rotateY(-90deg);
+                opacity: 0.35;
             }
         }
-        @keyframes cardFlipPrev {
+        @keyframes cardFlipInNext {
             0% {
-                opacity: 0.45;
-                transform: perspective(1700px) rotateY(-28deg) scale(0.975);
+                transform: perspective(1200px) translate3d(0, 0, -64px) rotateY(90deg);
+                opacity: 0.35;
             }
             100% {
+                transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg);
                 opacity: 1;
-                transform: perspective(1700px) rotateY(0deg) scale(1);
             }
+        }
+        @keyframes cardFlipOutPrev {
+            0% {
+                transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: perspective(1200px) translate3d(0, 0, -64px) rotateY(90deg);
+                opacity: 0.35;
+            }
+        }
+        @keyframes cardFlipInPrev {
+            0% {
+                transform: perspective(1200px) translate3d(0, 0, -64px) rotateY(-90deg);
+                opacity: 0.35;
+            }
+            100% {
+                transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg);
+                opacity: 1;
+            }
+        }
+        .video-frame.flip-out-next {
+            will-change: transform, opacity;
+            animation: cardFlipOutNext var(--flip-half) var(--flip-ease) forwards;
         }
         .video-frame.flip-next {
-            animation: cardFlipNext 0.5s cubic-bezier(0.32, 0.72, 0.25, 1) forwards;
+            will-change: transform, opacity;
+            animation: cardFlipInNext var(--flip-half) var(--flip-ease) forwards;
+        }
+        .video-frame.flip-out-prev {
+            will-change: transform, opacity;
+            animation: cardFlipOutPrev var(--flip-half) var(--flip-ease) forwards;
         }
         .video-frame.flip-prev {
-            animation: cardFlipPrev 0.5s cubic-bezier(0.32, 0.72, 0.25, 1) forwards;
+            will-change: transform, opacity;
+            animation: cardFlipInPrev var(--flip-half) var(--flip-ease) forwards;
         }
 
+        /* Mirni dvostrani 3D flip pri promeni orijentacije uređaja */
+        @keyframes orientation3DFlip {
+            0% {
+                transform: translate3d(0, 0, -60px) rotateY(-88deg);
+                opacity: 0.4;
+            }
+            100% {
+                transform: translate3d(0, 0, 0) rotateY(0deg);
+                opacity: 1;
+            }
+        }
+        #flip-stage.is-rotating {
+            background: var(--ios-flip-bg);
+            will-change: transform, opacity;
+            animation: orientation3DFlip 0.64s var(--flip-ease) forwards;
+        }
 
         /* --- LISTA KAMERA --- */
         #list-view, #fav-view {
@@ -465,6 +582,7 @@
             background: #ffffff;
             color: #1f2937;
             box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);
+            transition: border-color 0.24s var(--glide-ease), box-shadow 0.24s var(--glide-ease);
         }
         .search-input-box input::placeholder {
             color: #9ca3af;
@@ -491,9 +609,11 @@
             cursor: pointer;
             padding: 0;
             margin: 0;
+            transition: background 0.22s var(--glide-ease), transform 0.22s var(--glide-ease);
         }
         .clear-search-btn:active {
             background: #6b7280;
+            transform: translateY(-50%) scale(0.92);
         }
 
         .tool-pill-btn {
@@ -512,7 +632,7 @@
             justify-content: center;
             gap: 5px;
             box-shadow: 0 1px 2px rgba(0,0,0,0.08);
-            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease;
+            transition: transform 0.22s var(--glide-ease), background 0.26s var(--glide-ease), color 0.26s var(--glide-ease), border-color 0.26s var(--glide-ease);
         }
         .tool-pill-btn:active {
             transform: scale(0.96);
@@ -529,6 +649,7 @@
             border-radius: 50%;
             background: #10b981;
             display: inline-block;
+            transition: background 0.26s var(--glide-ease);
         }
         .tool-pill-btn.active-filter .pill-dot {
             background: #ffffff;
@@ -559,14 +680,17 @@
             font-weight: 500;
             color: #1f2937;
             cursor: pointer;
-            transition: background 0.2s ease, transform 0.18s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: background 0.24s var(--glide-ease), transform 0.24s var(--glide-ease);
         }
         .cam-row:last-child {
             border-bottom: none;
         }
         .cam-row:nth-child(odd) { background: #f3f4f6; }
         .cam-row:nth-child(even) { background: #ffffff; }
-        .cam-row:active { background: #fef3c7; }
+        .cam-row:active {
+            background: #fef3c7;
+            transform: scale(0.992);
+        }
 
         .cam-title-wrap {
             display: flex;
@@ -597,10 +721,11 @@
             flex-shrink: 0;
             background: #9ca3af;
             box-shadow: 0 0 0 1.5px rgba(0,0,0,0.06);
+            transition: background 0.32s var(--glide-ease), box-shadow 0.32s var(--glide-ease);
         }
         .status-dot.checking {
             background: #9ca3af;
-            animation: pulseDot 1.2s infinite linear;
+            animation: pulseDot 1.4s ease-in-out infinite;
         }
         .status-dot.online {
             background: #10b981;
@@ -626,6 +751,10 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            transition: transform 0.24s var(--glide-ease);
+        }
+        .cam-row:active .chevron-circle {
+            transform: translateX(2px);
         }
         .chevron-circle svg {
             width: 12px;
@@ -649,10 +778,10 @@
             opacity: 0.55;
         }
 
-        /* --- MAPA (MODERAN DIZAJN) --- */
+        /* --- MAPA --- */
         #map-view {
             background: #e5e7eb;
-            padding: calc(var(--header-h) + var(--safe-top)) 0 0 0;
+            padding: 0;
             overflow: hidden;
         }
         #map {
@@ -677,6 +806,7 @@
             line-height: 34px !important;
             font-weight: 700 !important;
             font-size: 17px !important;
+            transition: background 0.22s var(--glide-ease);
         }
         .leaflet-control-zoom a:active {
             background: #f3f4f6 !important;
@@ -689,10 +819,9 @@
             border-top-left-radius: 6px;
         }
 
-        /* Plutajuće kontrole na mapi */
         .map-floating-controls {
             position: absolute;
-            top: calc(var(--header-h) + var(--safe-top) + 12px);
+            top: 12px;
             right: 12px;
             z-index: 600;
             display: flex;
@@ -715,7 +844,7 @@
             justify-content: center;
             gap: 6px;
             cursor: pointer;
-            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), background 0.22s ease;
+            transition: transform 0.22s var(--glide-ease), background 0.26s var(--glide-ease), color 0.26s var(--glide-ease), border-color 0.26s var(--glide-ease);
         }
         .map-fab-btn:active {
             transform: scale(0.95);
@@ -727,7 +856,6 @@
             border-color: rgba(245, 158, 11, 0.45);
         }
 
-        /* Prilagođeni BelCam pinovi (GPU-akcelerisani za brz zoom na iOS-u) */
         .belcam-pin-wrap {
             background: transparent;
             border: none;
@@ -744,6 +872,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            transition: transform 0.24s var(--glide-ease);
         }
         .belcam-pin svg {
             transform: rotate(45deg);
@@ -760,12 +889,12 @@
             border: 1.5px solid #ffffff;
             background: #9ca3af;
             transform: rotate(45deg);
+            transition: background 0.32s var(--glide-ease);
         }
         .belcam-pin-status.online { background: #10b981; }
         .belcam-pin-status.offline { background: #ef4444; }
         .belcam-pin-status.checking { background: #9ca3af; }
 
-        /* Redizajniran popup oblačić */
         .leaflet-popup-content-wrapper {
             background: rgba(28, 30, 35, 0.96);
             backdrop-filter: blur(8px);
@@ -819,6 +948,7 @@
             gap: 5px;
             cursor: pointer;
             box-shadow: 0 2px 6px rgba(245, 158, 11, 0.35);
+            transition: transform 0.2s var(--glide-ease);
         }
         .map-callout-play:active {
             transform: scale(0.97);
@@ -835,6 +965,10 @@
             justify-content: center;
             cursor: pointer;
             flex-shrink: 0;
+            transition: transform 0.2s var(--glide-ease), color 0.24s var(--glide-ease), border-color 0.24s var(--glide-ease), background 0.24s var(--glide-ease);
+        }
+        .map-callout-fav:active {
+            transform: scale(0.94);
         }
         .map-callout-fav.is-fav {
             color: #f59e0b;
@@ -846,12 +980,12 @@
         #player-view {
             background: linear-gradient(180deg, #323539 0%, #1a1c1f 100%);
             color: #ffffff;
-            padding: calc(var(--header-h) + var(--safe-top) + 12px) 14px calc(24px + var(--safe-bottom)) 14px;
+            padding: 12px 14px calc(24px + var(--safe-bottom)) 14px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            perspective: 1400px;
-            -webkit-perspective: 1400px;
+            perspective: 1200px;
+            -webkit-perspective: 1200px;
         }
 
         .player-nav-row {
@@ -877,7 +1011,7 @@
             cursor: pointer;
             flex-shrink: 0;
             box-shadow: inset 0 1px 0 rgba(255,255,255,0.14), 0 1px 3px rgba(0,0,0,0.35);
-            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease;
+            transition: transform 0.22s var(--glide-ease), background 0.22s var(--glide-ease);
         }
         .step-cam-btn:active {
             transform: scale(0.95);
@@ -891,6 +1025,11 @@
             justify-content: center;
             min-width: 0;
             flex: 1;
+            transition: opacity 0.28s var(--glide-ease), transform 0.28s var(--glide-ease);
+        }
+        .player-title-center.title-switching {
+            opacity: 0.35;
+            transform: translateY(2px);
         }
         .player-name-line {
             display: flex;
@@ -917,40 +1056,33 @@
             margin-top: 2px;
         }
 
-        @keyframes smoothScreenFade {
+        @keyframes fullscreen3DOut {
             0% {
-                opacity: 0;
+                transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg);
+                opacity: 1;
             }
             100% {
+                transform: perspective(1200px) translate3d(0, 0, -64px) rotateY(-90deg);
+                opacity: 0.35;
+            }
+        }
+        @keyframes fullscreen3DIn {
+            0% {
+                transform: perspective(1200px) translate3d(0, 0, -64px) rotateY(90deg);
+                opacity: 0.35;
+            }
+            100% {
+                transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg);
                 opacity: 1;
             }
         }
+        .video-frame.fs-out {
+            will-change: transform, opacity;
+            animation: fullscreen3DOut var(--flip-half) var(--flip-ease) forwards;
+        }
         .video-frame.fs-fade {
-            animation: smoothScreenFade 0.36s cubic-bezier(0.32, 0.72, 0.25, 1) forwards;
-        }
-        #orientation-veil {
-            position: fixed;
-            inset: 0;
-            z-index: 9500;
-            background: rgba(24, 26, 30, 0.36);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: opacity 0.28s cubic-bezier(0.32, 0.72, 0.25, 1), visibility 0.28s cubic-bezier(0.32, 0.72, 0.25, 1);
-        }
-        #orientation-veil.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        #flip-stage.is-rotating {
-            transition: transform 0.36s cubic-bezier(0.32, 0.72, 0.25, 1), opacity 0.36s cubic-bezier(0.32, 0.72, 0.25, 1);
-            transform: scale(0.975);
-            opacity: 0.78;
-        }
-        #top-bar {
-            transition: height 0.32s cubic-bezier(0.32, 0.72, 0.25, 1), padding 0.32s cubic-bezier(0.32, 0.72, 0.25, 1);
+            will-change: transform, opacity;
+            animation: fullscreen3DIn var(--flip-half) var(--flip-ease) forwards;
         }
 
         .video-frame {
@@ -968,7 +1100,8 @@
             overflow: hidden;
             transform-origin: 50% 50%;
             -webkit-transform-origin: 50% 50%;
-            transition: width 0.34s cubic-bezier(0.32, 0.72, 0.25, 1), height 0.34s cubic-bezier(0.32, 0.72, 0.25, 1), max-width 0.34s cubic-bezier(0.32, 0.72, 0.25, 1), max-height 0.34s cubic-bezier(0.32, 0.72, 0.25, 1), border-radius 0.28s cubic-bezier(0.32, 0.72, 0.25, 1);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
         }
 
         .video-frame.is-fullscreen {
@@ -1014,7 +1147,7 @@
             z-index: 2;
             background: linear-gradient(110deg, #111317 25%, #232730 45%, #111317 65%);
             background-size: 200% 100%;
-            animation: videoShimmer 1.35s linear infinite;
+            animation: videoShimmer 1.5s linear infinite;
             pointer-events: none;
         }
         @keyframes videoShimmer {
@@ -1036,6 +1169,7 @@
             border-radius: 8px;
             max-width: 85%;
             pointer-events: none;
+            transition: opacity 0.28s var(--glide-ease);
         }
 
         /* UŽIVO bedž u gornjem levom uglu videa */
@@ -1064,6 +1198,11 @@
         }
         .live-badge.visible {
             display: inline-flex;
+            animation: fadeInSmooth 0.34s var(--glide-ease) forwards;
+        }
+        @keyframes fadeInSmooth {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
         .live-rec-dot {
             width: 7px;
@@ -1071,14 +1210,14 @@
             border-radius: 50%;
             background: #10b981;
             box-shadow: 0 0 8px #10b981;
-            animation: livePulse 1.4s linear infinite;
+            animation: livePulse 1.5s ease-in-out infinite;
         }
         @keyframes livePulse {
             0%, 100% { opacity: 1; transform: scale(1); }
             50% { opacity: 0.4; transform: scale(0.84); }
         }
 
-        /* Dugme za ceo ekran u donjem desnom uglu videa - uklopljeno u BelCam vizuelni stil */
+        /* Dugme za ceo ekran u donjem desnom uglu videa */
         .fullscreen-toggle-btn {
             position: absolute;
             bottom: 10px;
@@ -1101,10 +1240,11 @@
             gap: 5px;
             cursor: pointer;
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 4px 12px rgba(0, 0, 0, 0.5);
-            transition: transform 0.14s linear, background 0.18s linear, border-color 0.18s linear;
+            transition: transform 0.2s var(--glide-ease), background 0.24s var(--glide-ease), border-color 0.24s var(--glide-ease), color 0.24s var(--glide-ease);
         }
         .fullscreen-toggle-btn span {
             color: #f3f4f6;
+            transition: color 0.24s var(--glide-ease);
         }
         .video-frame.is-fullscreen .fullscreen-toggle-btn {
             bottom: calc(36px + var(--safe-bottom));
@@ -1113,7 +1253,7 @@
             padding: 0 14px;
         }
         .fullscreen-toggle-btn:active {
-            transform: scale(0.94);
+            transform: scale(0.95);
             background: linear-gradient(180deg, #f59e0b 0%, #d97706 100%);
             border-color: #f59e0b;
             color: #111827;
@@ -1147,13 +1287,13 @@
             justify-content: center;
             gap: 6px;
             cursor: pointer;
-            transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), background 0.2s ease;
+            transition: transform 0.22s var(--glide-ease), background 0.22s var(--glide-ease);
         }
         .refresh-stream-btn:active {
             transform: scale(0.96);
             background: #23262a;
         }
-        .refresh-stream-btn.spinning svg { animation: spinOnce 0.6s linear; }
+        .refresh-stream-btn.spinning svg { animation: spinOnce 0.72s var(--glide-ease); }
         @keyframes spinOnce {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
@@ -1171,6 +1311,7 @@
             color: #d1d5db;
             text-align: right;
             line-height: 1.3;
+            transition: color 0.26s var(--glide-ease);
         }
         #player-fav-btn {
             width: 40px;
@@ -1186,7 +1327,7 @@
             color: #181a1d;
             cursor: pointer;
             flex-shrink: 0;
-            transition: transform 0.14s linear, color 0.18s linear;
+            transition: transform 0.22s var(--glide-ease), color 0.26s var(--glide-ease), filter 0.26s var(--glide-ease);
         }
         #player-fav-btn svg {
             width: 21px;
@@ -1208,7 +1349,7 @@
             position: fixed;
             bottom: calc(20px + var(--safe-bottom));
             left: 50%;
-            transform: translateX(-50%) translateY(18px);
+            transform: translateX(-50%) translateY(16px);
             background: rgba(24, 26, 30, 0.95);
             color: #f9fafb;
             border: 1px solid rgba(245, 158, 11, 0.45);
@@ -1220,7 +1361,7 @@
             z-index: 2500;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1), transform 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+            transition: opacity 0.42s var(--glide-ease), transform 0.42s var(--glide-ease);
             max-width: 90vw;
             text-align: center;
             white-space: normal;
@@ -1235,7 +1376,7 @@
             color: #fecaca;
         }
 
-        /* --- INFO MODAL --- */
+        /* --- INFO MODAL (ISTI KONSTANTNI 3D FLIP KAO CEO SISTEM) --- */
         #info-modal {
             display: flex;
             opacity: 0;
@@ -1243,12 +1384,14 @@
             pointer-events: none;
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.74);
+            background: rgba(24, 29, 36, 0.74);
             z-index: 2000;
             align-items: center;
             justify-content: center;
             padding: 20px;
-            transition: opacity 0.38s cubic-bezier(0.32, 0.72, 0.25, 1), visibility 0.38s cubic-bezier(0.32, 0.72, 0.25, 1);
+            perspective: 1200px;
+            -webkit-perspective: 1200px;
+            transition: opacity var(--flip-duration) var(--flip-ease), visibility var(--flip-duration) var(--flip-ease);
         }
         #info-modal.open {
             opacity: 1;
@@ -1261,16 +1404,20 @@
             background: linear-gradient(180deg, #43484f 0%, #2b2e33 100%);
             border: 1px solid #5c626a;
             border-radius: 11px;
-            box-shadow: 0 14px 34px rgba(0,0,0,0.7);
+            box-shadow: 0 20px 44px rgba(0,0,0,0.7);
             color: #f3f4f6;
             overflow: hidden;
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
-            transform: perspective(1800px) rotateY(90deg) scale(0.96);
-            transition: transform 0.44s cubic-bezier(0.32, 0.72, 0.25, 1);
+            will-change: transform, opacity;
+            opacity: 0;
+            transform: translate3d(0, 0, -72px) rotateY(-180deg);
+            transition: transform var(--flip-duration) var(--flip-ease), opacity 0.01s linear var(--flip-half);
         }
         #info-modal.open .info-card {
-            transform: perspective(1800px) rotateY(0deg) scale(1);
+            opacity: 1;
+            transform: translate3d(0, 0, 0) rotateY(0deg);
+            transition: transform var(--flip-duration) var(--flip-ease), opacity 0.01s linear var(--flip-half);
         }
         .info-card-header {
             padding: 12px 15px;
@@ -1294,6 +1441,11 @@
             line-height: 1;
             cursor: pointer;
             padding: 0 4px;
+            transition: color 0.2s var(--glide-ease), transform 0.2s var(--glide-ease);
+        }
+        .info-close-x:active {
+            color: #ffffff;
+            transform: scale(0.92);
         }
         .info-card-body {
             padding: 14px 15px;
@@ -1322,6 +1474,10 @@
             font-weight: 700;
             font-size: 13.5px;
             cursor: pointer;
+            transition: transform 0.2s var(--glide-ease);
+        }
+        .info-ok-btn:active {
+            transform: scale(0.97);
         }
 
         /* --- LANDSCAPE (POLOŽENI) PRIKAZ --- */
@@ -1344,7 +1500,7 @@
                 padding: 8px 14px;
             }
             #player-view {
-                padding: calc(var(--header-h) + var(--safe-top) + 6px) calc(14px + var(--safe-right)) calc(8px + var(--safe-bottom)) calc(14px + var(--safe-left));
+                padding: 6px calc(14px + var(--safe-right)) calc(8px + var(--safe-bottom)) calc(14px + var(--safe-left));
                 justify-content: space-between;
             }
             .player-nav-row {
@@ -1395,7 +1551,7 @@
                 display: none;
             }
             .map-floating-controls {
-                top: calc(var(--header-h) + var(--safe-top) + 8px);
+                top: 8px;
                 right: calc(12px + var(--safe-right));
             }
             .leaflet-control-zoom {
@@ -1423,7 +1579,7 @@
         </div>
     </div>
 
-    <!-- GORNJI BAR -->
+    <!-- GORNJI BAR (OSTAJE STATIČAN TOKOM 3D FLIPA) -->
     <header id="top-bar">
         <div class="top-left-slot">
             <button id="left-btn" class="nav-btn" onclick="handleLeftBtn()" title="Mapa / Lista">
@@ -1522,7 +1678,7 @@
                     <polyline points="15 18 9 12 15 6"></polyline>
                 </svg>
             </button>
-            <div class="player-title-center">
+            <div class="player-title-center" id="player-title-wrap">
                 <div class="player-name-line">
                     <span id="player-status-dot" class="status-dot checking"></span>
                     <h2 id="player-cam-name">Naziv kamere</h2>
@@ -1561,9 +1717,6 @@
     </section>
 
     </div>
-
-    <!-- ORIENTATION VEIL -->
-    <div id="orientation-veil"></div>
 
     <!-- TOAST -->
     <div id="toast"></div>
@@ -1606,7 +1759,6 @@
 
 <script>
     const APP_VERSION = "1.1.7";
-    // Ovde nalepi svoj GitHub link (npr. https://korisnickoime.github.io/belcam/cameras.json)
     const REMOTE_CONFIG_URL = "./cameras.json";
 
     const DEFAULT_CAMERAS = [
@@ -1693,7 +1845,7 @@
             splash.classList.add('hidden');
             setTimeout(() => {
                 if (splash.parentNode) splash.remove();
-            }, 600);
+            }, 650);
         }
     }
 
@@ -1760,7 +1912,7 @@
         showToast(onlyOnlineFilter ? "Prikazane samo aktivne kamere" : "Prikazane sve kamere");
     }
 
-    // --- PROVERA STATUSA STRIMA (STVARNA PROVERA ZA SVE SERVERE) ---
+    // --- PROVERA STATUSA STRIMA ---
     function probeVideoUrl(url, timeoutMs = 6000) {
         return new Promise((resolve) => {
             const v = document.createElement('video');
@@ -1810,7 +1962,6 @@
             setCameraStatus(cam.id, text && text.includes('#EXTM3U') ? 'online' : 'offline');
         } catch (err) {
             clearTimeout(timeoutId);
-            // Ako CORS blokira fetch (npr. ott.solutions sa lokalnog fajla), proveri kroz stvarni <video> metadata probe
             const isPlayable = await probeVideoUrl(cam.url, 6500);
             setCameraStatus(cam.id, isPlayable ? 'online' : 'offline');
         }
@@ -1905,23 +2056,30 @@
         }
     }
 
-    // --- NAVIGACIJA I PRAVA iOS DVOSTRANA 3D FLIP ANIMACIJA ---
+    // --- NAVIGACIJA I MIRNA, KONSTANTNA 3D FLIP ANIMACIJA KROZ CEO SISTEM ---
     let flipCleanupTimer = null;
+    let stepFlipTimer = null;
+    let fsFlipTimer = null;
     const savedViewScroll = { list: 0, fav: 0, map: 0, player: 0 };
+
+    function triggerNavGlide(btn) {
+        if (!btn) return;
+        btn.classList.remove('nav-glide');
+        void btn.offsetWidth;
+        btn.classList.add('nav-glide');
+    }
 
     function triggerFlipAnimation(el, animClass) {
         if (!el) return;
-        el.classList.remove('flip-next', 'flip-prev');
+        el.classList.remove('flip-next', 'flip-prev', 'flip-out-next', 'flip-out-prev', 'fs-out', 'fs-fade');
         void el.offsetWidth;
         el.classList.add(animClass);
         el.addEventListener('animationend', () => {
-            el.classList.remove('flip-next', 'flip-prev');
+            el.classList.remove(animClass);
         }, { once: true });
     }
 
-    function syncSurfaceTheme() {
-        // html, body i #flip-stage ostaju stalno #1a1c1f radi 100% stabilnog donjeg ruba na iOS-u
-    }
+    function syncSurfaceTheme() {}
 
     function cancelViewAnims() {
         clearTimeout(flipCleanupTimer);
@@ -1967,7 +2125,7 @@
             if (currentView === 'map' && map) {
                 map.invalidateSize(false);
             }
-        }, 630);
+        }, 790);
     }
 
     function showView(viewName, pushHistory = true, flipDir = null) {
@@ -1978,7 +2136,7 @@
         }
 
         if (currentView === 'player' && viewName !== 'player') {
-            exitVideoFullscreen();
+            exitVideoFullscreen(true);
             stopStream();
         }
         if (viewName !== 'player') {
@@ -2006,17 +2164,19 @@
 
         if (viewName === 'player') {
             leftBtn.innerHTML = '‹ Nazad';
-            rightBtn.style.visibility = 'hidden';
+            rightBtn.classList.add('is-hidden-slot');
         } else if (viewName === 'map') {
             leftBtn.innerHTML = iconList;
-            rightBtn.style.visibility = 'visible';
+            rightBtn.classList.remove('is-hidden-slot');
         } else {
             leftBtn.innerHTML = iconPin;
-            rightBtn.style.visibility = 'visible';
+            rightBtn.classList.remove('is-hidden-slot');
             renderLists();
         }
 
         if (prevViewSnapshot !== viewName) {
+            triggerNavGlide(leftBtn);
+            if (viewName !== 'player') triggerNavGlide(rightBtn);
             runTwoSidedFlip(outgoingView, targetView, direction, viewName);
             if (viewName === 'map') {
                 initMap();
@@ -2038,29 +2198,23 @@
 
     function handleOrientationTransition() {
         const stage = document.getElementById('flip-stage');
-        const veil = document.getElementById('orientation-veil');
-        if (stage) stage.classList.add('is-rotating');
-        if (veil) veil.classList.add('active');
+        if (stage) {
+            stage.classList.remove('is-rotating');
+            void stage.offsetWidth;
+            stage.classList.add('is-rotating');
+        }
 
         if (mapReady && map) {
             map.invalidateSize(false);
         }
 
         clearTimeout(orientationTimer);
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                if (stage) stage.classList.remove('is-rotating');
-                if (veil) veil.classList.remove('active');
-            });
-        });
-
         orientationTimer = setTimeout(() => {
             if (stage) stage.classList.remove('is-rotating');
-            if (veil) veil.classList.remove('active');
             if (mapReady && map) {
                 map.invalidateSize(true);
             }
-        }, 360);
+        }, 650);
     }
 
     if (screen.orientation && screen.orientation.addEventListener) {
@@ -2120,7 +2274,7 @@
         }
     }
 
-    // --- MAPA (MODERNA SVETLA + SATELITSKI PRIKAZ BEZ API KLJUČA + PRILAGOĐENI PINOVI) ---
+    // --- MAPA ---
     let mapBaseLayer = null;
     let mapLabelsLayer = null;
     let mapIsSatellite = false;
@@ -2257,7 +2411,7 @@
 
     function centerMapBelgrade() {
         if (!mapReady || !map) return;
-        map.flyTo([44.8105, 20.4560], 13, { duration: 0.6 });
+        map.flyTo([44.8105, 20.4560], 13, { duration: 0.72 });
     }
 
     function updateMapMarkersVisibility() {
@@ -2273,7 +2427,7 @@
         });
     }
 
-    // --- PRETHODNA / SLEDEĆA KAMERA U PLEJERU ---
+    // --- PRETHODNA / SLEDEĆA KAMERA U PLEJERU (DVOSTRANI 3D FLIP) ---
     function getActivePool() {
         if (previousView === 'fav' && favorites.length > 0) {
             return cameras.filter(c => favorites.includes(c.id));
@@ -2289,58 +2443,86 @@
         const nextIdx = currentIdx === -1
             ? 0
             : (currentIdx + direction + pool.length) % pool.length;
-        openCamera(pool[nextIdx].id, false);
+        const nextCamId = pool[nextIdx].id;
+
         const wrapper = document.getElementById('video-wrapper');
+        const titleWrap = document.getElementById('player-title-wrap');
+
+        clearTimeout(stepFlipTimer);
+        if (titleWrap) titleWrap.classList.add('title-switching');
+
         if (wrapper) {
-            if (wrapper.classList.contains('is-fullscreen')) {
-                triggerVideoFsFade(wrapper);
-            } else {
-                triggerFlipAnimation(wrapper, direction > 0 ? 'flip-next' : 'flip-prev');
-            }
+            triggerFlipAnimation(wrapper, direction > 0 ? 'flip-out-next' : 'flip-out-prev');
+            stepFlipTimer = setTimeout(() => {
+                openCamera(nextCamId, false);
+                if (titleWrap) titleWrap.classList.remove('title-switching');
+                const refreshedWrapper = document.getElementById('video-wrapper');
+                if (refreshedWrapper) {
+                    triggerFlipAnimation(refreshedWrapper, direction > 0 ? 'flip-next' : 'flip-prev');
+                }
+            }, 375);
+        } else {
+            openCamera(nextCamId, false);
+            if (titleWrap) titleWrap.classList.remove('title-switching');
         }
     }
 
-    // --- FULLSCREEN PRIKAZ VIDEA (NATIVE + WEBVIEW FALLBACK) ---
+    // --- FULLSCREEN PRIKAZ VIDEA (DVOSTRANI 3D FLIP) ---
     function triggerVideoFsFade(wrapper) {
         if (!wrapper) return;
-        wrapper.classList.remove('fs-fade');
-        void wrapper.offsetWidth;
-        wrapper.classList.add('fs-fade');
+        triggerFlipAnimation(wrapper, 'fs-fade');
     }
 
     function enterVideoFullscreen() {
         const wrapper = document.getElementById('video-wrapper');
-        if (!wrapper) return;
-        wrapper.classList.add('is-fullscreen');
-        triggerVideoFsFade(wrapper);
-        updateFullscreenBtnIcon(true);
-        if (wrapper.requestFullscreen) {
-            wrapper.requestFullscreen().catch(() => {});
-        } else if (wrapper.webkitRequestFullscreen) {
-            try { wrapper.webkitRequestFullscreen(); } catch (e) {}
-        }
-        if (screen.orientation && screen.orientation.lock) {
-            screen.orientation.lock('landscape').catch(() => {});
-        }
+        if (!wrapper || wrapper.classList.contains('is-fullscreen')) return;
+
+        clearTimeout(fsFlipTimer);
+        triggerFlipAnimation(wrapper, 'fs-out');
+
+        fsFlipTimer = setTimeout(() => {
+            wrapper.classList.add('is-fullscreen');
+            triggerVideoFsFade(wrapper);
+            updateFullscreenBtnIcon(true);
+            if (wrapper.requestFullscreen) {
+                wrapper.requestFullscreen().catch(() => {});
+            } else if (wrapper.webkitRequestFullscreen) {
+                try { wrapper.webkitRequestFullscreen(); } catch (e) {}
+            }
+            if (screen.orientation && screen.orientation.lock) {
+                screen.orientation.lock('landscape').catch(() => {});
+            }
+        }, 375);
     }
 
-    function exitVideoFullscreen() {
+    function exitVideoFullscreen(immediate = false) {
         const wrapper = document.getElementById('video-wrapper');
-        if (wrapper) {
-            const wasFs = wrapper.classList.contains('is-fullscreen');
-            wrapper.classList.remove('is-fullscreen');
-            if (wasFs) triggerVideoFsFade(wrapper);
-        }
-        updateFullscreenBtnIcon(false);
-        if (document.fullscreenElement || document.webkitFullscreenElement) {
-            if (document.exitFullscreen) {
-                document.exitFullscreen().catch(() => {});
-            } else if (document.webkitExitFullscreen) {
-                try { document.webkitExitFullscreen(); } catch (e) {}
+        clearTimeout(fsFlipTimer);
+
+        const applyExit = () => {
+            if (wrapper) {
+                const wasFs = wrapper.classList.contains('is-fullscreen');
+                wrapper.classList.remove('is-fullscreen', 'fs-out');
+                if (wasFs && !immediate) triggerVideoFsFade(wrapper);
             }
-        }
-        if (screen.orientation && screen.orientation.unlock) {
-            try { screen.orientation.unlock(); } catch (e) {}
+            updateFullscreenBtnIcon(false);
+            if (document.fullscreenElement || document.webkitFullscreenElement) {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen().catch(() => {});
+                } else if (document.webkitExitFullscreen) {
+                    try { document.webkitExitFullscreen(); } catch (e) {}
+                }
+            }
+            if (screen.orientation && screen.orientation.unlock) {
+                try { screen.orientation.unlock(); } catch (e) {}
+            }
+        };
+
+        if (wrapper && wrapper.classList.contains('is-fullscreen') && !immediate) {
+            triggerFlipAnimation(wrapper, 'fs-out');
+            fsFlipTimer = setTimeout(applyExit, 375);
+        } else {
+            applyExit();
         }
     }
 
@@ -2516,7 +2698,6 @@
         `;
 
         const video = document.getElementById('live-video');
-        // Eksplicitno postavljanje DOM svojstava pre učitavanja (obavezno za Android Chrome/WebView autoplay)
         video.muted = true;
         video.defaultMuted = true;
         video.playsInline = true;
@@ -2645,12 +2826,9 @@
             video.src = streamUrl;
             video.load();
 
-            // Sinhroni play() odmah u okviru korisničkog klika (ključno za Android Chrome)
             const playPromise = video.play();
             if (playPromise && typeof playPromise.catch === 'function') {
-                playPromise.catch(() => {
-                    // Sačekaj loadedmetadata pa probaj ponovo
-                });
+                playPromise.catch(() => {});
             }
 
             video.addEventListener('loadedmetadata', () => {
