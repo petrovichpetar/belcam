@@ -812,10 +812,23 @@
             }
         }
         .video-frame.fs-fade {
-            animation: smoothScreenFade 0.32s linear forwards;
+            animation: smoothScreenFade 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
         #orientation-veil {
-            display: none;
+            position: fixed;
+            inset: -40px;
+            z-index: 9500;
+            background: #1a1c1f;
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            will-change: opacity;
+            transition: opacity 0.42s cubic-bezier(0.22, 1, 0.36, 1), visibility 0s linear 0.42s;
+        }
+        #orientation-veil.active {
+            opacity: 1;
+            visibility: visible;
+            transition: opacity 0.14s ease-out, visibility 0s linear 0s;
         }
         html.is-rotating,
         html.is-rotating body,
@@ -1465,7 +1478,7 @@
                 </div>
                 <div class="info-row">
                     <span class="info-key">Verzija aplikacije:</span>
-                    <span class="info-val" id="info-app-version">1.1.4</span>
+                    <span class="info-val" id="info-app-version">1.1.5</span>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Lista kamera:</span>
@@ -1484,7 +1497,7 @@
     </div>
 
 <script>
-    const APP_VERSION = "1.1.4";
+    const APP_VERSION = "1.1.5";
     // Ovde nalepi svoj GitHub link (npr. https://korisnickoime.github.io/belcam/cameras.json)
     const REMOTE_CONFIG_URL = "./cameras.json";
 
@@ -1827,24 +1840,22 @@
         outgoingEl.scrollTop = outScroll;
 
         const timing = {
-            duration: 740,
-            easing: 'linear',
+            duration: 500,
+            easing: 'cubic-bezier(0.25, 0.85, 0.35, 1)',
             fill: 'forwards'
         };
 
-        // Prva polovina: vidljiv je samo outgoingEl (0° -> ±90°), incomingEl je opacity 0
-        // Tačno na 50% (±90°): outgoingEl postaje opacity 0, incomingEl postaje opacity 1 (±90° -> 0°)
         const outAnim = outgoingEl.animate([
             { transform: 'translate3d(0,0,0) rotateY(0deg) scale(1)', opacity: 1, zIndex: 3 },
-            { transform: 'translate3d(0,0,0) rotateY(' + outMidDeg + ') scale(0.95)', opacity: 1, zIndex: 3, offset: 0.499 },
-            { transform: 'translate3d(0,0,0) rotateY(' + outMidDeg + ') scale(0.95)', opacity: 0, zIndex: 1, offset: 0.501 },
+            { transform: 'translate3d(0,0,0) rotateY(' + outMidDeg + ') scale(0.96)', opacity: 1, zIndex: 3, offset: 0.499 },
+            { transform: 'translate3d(0,0,0) rotateY(' + outMidDeg + ') scale(0.96)', opacity: 0, zIndex: 1, offset: 0.501 },
             { transform: 'translate3d(0,0,0) rotateY(' + outEndDeg + ') scale(1)', opacity: 0, zIndex: 1 }
         ], timing);
 
         const inAnim = incomingEl.animate([
             { transform: 'translate3d(0,0,0) rotateY(' + inStartDeg + ') scale(1)', opacity: 0, zIndex: 1 },
-            { transform: 'translate3d(0,0,0) rotateY(' + inMidDeg + ') scale(0.95)', opacity: 0, zIndex: 1, offset: 0.499 },
-            { transform: 'translate3d(0,0,0) rotateY(' + inMidDeg + ') scale(0.95)', opacity: 1, zIndex: 3, offset: 0.501 },
+            { transform: 'translate3d(0,0,0) rotateY(' + inMidDeg + ') scale(0.96)', opacity: 0, zIndex: 1, offset: 0.499 },
+            { transform: 'translate3d(0,0,0) rotateY(' + inMidDeg + ') scale(0.96)', opacity: 1, zIndex: 3, offset: 0.501 },
             { transform: 'translate3d(0,0,0) rotateY(0deg) scale(1)', opacity: 1, zIndex: 3 }
         ], timing);
 
@@ -1924,19 +1935,33 @@
 
     let lastIsLandscape = window.innerWidth > window.innerHeight;
     let orientationTimer = null;
+    let orientationSettleTimer = null;
 
     function handleOrientationTransition() {
+        const veil = document.getElementById('orientation-veil');
         document.documentElement.classList.add('is-rotating');
+        if (veil) {
+            veil.classList.add('active');
+        }
         if (mapReady && map) {
             map.invalidateSize(false);
         }
         clearTimeout(orientationTimer);
+        clearTimeout(orientationSettleTimer);
+
+        // Sačekaj da iOS/Android završi sistemsko preuređivanje viewport-a (safe-area i dimenzije)
         orientationTimer = setTimeout(() => {
-            document.documentElement.classList.remove('is-rotating');
             if (mapReady && map) {
                 map.invalidateSize(false);
             }
-        }, 420);
+            document.documentElement.classList.remove('is-rotating');
+            // Lagano i meko otkrij novi raspored (420ms fade-out) bez seckanja i treptaja
+            orientationSettleTimer = setTimeout(() => {
+                if (veil) {
+                    veil.classList.remove('active');
+                }
+            }, 60);
+        }, 320);
     }
 
     if (screen.orientation && screen.orientation.addEventListener) {
