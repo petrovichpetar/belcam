@@ -409,23 +409,7 @@
                 opacity: 1;
             }
         }
-        .video-frame {
-            backface-visibility: hidden;
-            -webkit-backface-visibility: hidden;
-            will-change: transform, opacity;
-        }
-        .video-frame.flip-out-next {
-            animation: cardFlipOutNext 0.38s linear forwards;
-        }
-        .video-frame.flip-in-next {
-            animation: cardFlipInNext 0.38s linear forwards;
-        }
-        .video-frame.flip-out-prev {
-            animation: cardFlipOutPrev 0.38s linear forwards;
-        }
-        .video-frame.flip-in-prev {
-            animation: cardFlipInPrev 0.38s linear forwards;
-        }
+
 
         /* --- LISTA KAMERA --- */
         #list-view, #fav-view {
@@ -922,11 +906,21 @@
                 opacity: 1;
             }
         }
-        #flip-stage.orientation-fade {
-            animation: smoothScreenFade 0.34s linear forwards;
-        }
         .video-frame.fs-fade {
             animation: smoothScreenFade 0.32s linear forwards;
+        }
+        #orientation-veil {
+            position: fixed;
+            inset: 0;
+            background: #1a1c1f;
+            z-index: 2800;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.28s ease-out;
+        }
+        #orientation-veil.active {
+            opacity: 1;
+            transition: none;
         }
 
         .video-frame {
@@ -942,7 +936,24 @@
             justify-content: center;
             position: relative;
             overflow: hidden;
-            transition: opacity 0.28s linear, border-radius 0.22s linear;
+            transform-origin: 50% 50%;
+            -webkit-transform-origin: 50% 50%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            will-change: transform, opacity;
+            transition: border-radius 0.22s linear;
+        }
+        .video-frame.flip-out-next {
+            animation: cardFlipOutNext 0.34s linear forwards !important;
+        }
+        .video-frame.flip-in-next {
+            animation: cardFlipInNext 0.34s linear forwards !important;
+        }
+        .video-frame.flip-out-prev {
+            animation: cardFlipOutPrev 0.34s linear forwards !important;
+        }
+        .video-frame.flip-in-prev {
+            animation: cardFlipInPrev 0.34s linear forwards !important;
         }
         .video-frame.is-fullscreen {
             position: fixed !important;
@@ -1535,6 +1546,9 @@
 
     </div>
 
+    <!-- ORIENTATION VEIL -->
+    <div id="orientation-veil"></div>
+
     <!-- TOAST -->
     <div id="toast"></div>
 
@@ -1556,7 +1570,7 @@
                 </div>
                 <div class="info-row">
                     <span class="info-key">Verzija aplikacije:</span>
-                    <span class="info-val" id="info-app-version">1.1.0</span>
+                    <span class="info-val" id="info-app-version">1.1.1</span>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Lista kamera:</span>
@@ -1575,7 +1589,7 @@
     </div>
 
 <script>
-    const APP_VERSION = "1.1.0";
+    const APP_VERSION = "1.1.1";
     // Ovde nalepi svoj GitHub link (npr. https://korisnickoime.github.io/belcam/cameras.json)
     const REMOTE_CONFIG_URL = "./cameras.json";
 
@@ -1984,30 +1998,40 @@
     }
 
     let lastIsLandscape = window.innerWidth > window.innerHeight;
+    let orientationVeilTimer = null;
+
     function triggerOrientationFade() {
-        const stage = document.getElementById('flip-stage');
-        if (stage) {
-            stage.classList.remove('orientation-fade');
-            void stage.offsetWidth;
-            stage.classList.add('orientation-fade');
-        }
+        const veil = document.getElementById('orientation-veil');
+        if (!veil) return;
+        clearTimeout(orientationVeilTimer);
+        veil.classList.add('active');
+        orientationVeilTimer = setTimeout(() => {
+            requestAnimationFrame(() => {
+                veil.classList.remove('active');
+            });
+            if (mapReady && map) {
+                map.invalidateSize(false);
+            }
+        }, 160);
     }
 
-    window.addEventListener('orientationchange', () => {
-        triggerOrientationFade();
-        if (mapReady && map) {
-            setTimeout(() => map.invalidateSize(), 250);
-        }
-    });
+    if (screen.orientation && screen.orientation.addEventListener) {
+        screen.orientation.addEventListener('change', () => {
+            lastIsLandscape = window.innerWidth > window.innerHeight;
+            triggerOrientationFade();
+        });
+    } else {
+        window.addEventListener('orientationchange', () => {
+            lastIsLandscape = window.innerWidth > window.innerHeight;
+            triggerOrientationFade();
+        });
+    }
 
     window.addEventListener('resize', () => {
         const isLandscape = window.innerWidth > window.innerHeight;
         if (isLandscape !== lastIsLandscape) {
             lastIsLandscape = isLandscape;
             triggerOrientationFade();
-            if (mapReady && map) {
-                setTimeout(() => map.invalidateSize(), 200);
-            }
         }
     });
 
@@ -2222,13 +2246,19 @@
         const nextCamId = pool[nextIdx].id;
 
         const wrapper = document.getElementById('video-wrapper');
-        if (!wrapper || wrapper.classList.contains('is-fullscreen')) {
+        if (!wrapper) {
             openCamera(nextCamId, false);
             return;
         }
 
+        if (wrapper.classList.contains('is-fullscreen')) {
+            openCamera(nextCamId, false);
+            triggerVideoFsFade(wrapper);
+            return;
+        }
+
         clearTimeout(stepCamTimer);
-        wrapper.classList.remove('flip-out-next', 'flip-in-next', 'flip-out-prev', 'flip-in-prev', 'flip-next', 'flip-prev');
+        wrapper.classList.remove('flip-out-next', 'flip-in-next', 'flip-out-prev', 'flip-in-prev', 'fs-fade');
         void wrapper.offsetWidth;
 
         const outClass = direction > 0 ? 'flip-out-next' : 'flip-out-prev';
@@ -2244,8 +2274,8 @@
 
             stepCamTimer = setTimeout(() => {
                 wrapper.classList.remove(inClass);
-            }, 390);
-        }, 380);
+            }, 350);
+        }, 340);
     }
 
     // --- FULLSCREEN PRIKAZ VIDEA (NATIVE + WEBVIEW FALLBACK) ---
@@ -2775,8 +2805,8 @@
         });
     }
 
-    // Uklanjanje splash screen-a nakon 1.6s
-    setTimeout(hideSplashScreen, 1600);
+    // Uklanjanje splash screen-a nakon 2.5s
+    setTimeout(hideSplashScreen, 2500);
 </script>
 </body>
 </html>
