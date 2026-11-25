@@ -88,6 +88,8 @@
             align-items: center;
             justify-content: center;
             padding: calc(60px + var(--safe-top)) 40px calc(60px + var(--safe-bottom)) 40px;
+            opacity: 1;
+            visibility: visible;
             transition: opacity 0.6s var(--glide-ease), visibility 0.6s var(--glide-ease);
         }
         #splash-screen.hidden {
@@ -113,7 +115,7 @@
                 transform: scale(1) translateY(0);
             }
         }
-		.splash-icon-box {
+        .splash-icon-box {
             position: relative;
             width: 96px;
             height: 96px;
@@ -327,7 +329,7 @@
         }
 
         #flip-stage.is-animating {
-            background: var(--ios-flip-bg);
+            background: #1a1c1f;
         }
 
         .view {
@@ -387,11 +389,6 @@
         .view.flip-in-from-left .search-wrap,
         .view.flip-in-from-right .search-wrap {
             animation: searchBarSettle var(--flip-duration) var(--glide-ease) forwards;
-        }
-
-        .view.flip-out-from-right,
-		#flip-stage.is-animating {
-            background: #1a1c1f;
         }
 
         .view.flip-out-from-right,
@@ -1631,7 +1628,9 @@
 <body class="is-splashing" style="background:#1a1c1f;">
 
     <!-- SPLASH SCREEN -->
-<div class="splash-icon-box">
+    <div id="splash-screen">
+        <div class="splash-center">
+            <div class="splash-icon-box">
                 <span class="splash-rec-dot"></span>
                 <svg width="68" height="48" viewBox="0 0 32 22" fill="none">
                     <polygon points="7,6 1,2 1,20 7,16" fill="#f59e0b"/>
@@ -1806,7 +1805,7 @@
                 </div>
                 <div class="info-row">
                     <span class="info-key">Verzija aplikacije:</span>
-                    <span class="info-val" id="info-app-version">1.2.1</span>
+                    <span class="info-val" id="info-app-version">1.2.2</span>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Lista kamera:</span>
@@ -1825,7 +1824,7 @@
     </div>
 
 <script>
-    const APP_VERSION = "1.2.1";
+    const APP_VERSION = "1.2.2";
     const REMOTE_CONFIG_URL = "./cameras.json";
 
     const DEFAULT_CAMERAS = [
