@@ -2192,22 +2192,20 @@
         const rightBtn = document.getElementById('right-btn');
 
         rightBtn.classList.toggle('active-tab', viewName === 'fav');
+        rightBtn.classList.remove('is-hidden-slot');
 
         if (viewName === 'player') {
             leftBtn.innerHTML = '‹ Nazad';
-            rightBtn.classList.add('is-hidden-slot');
         } else if (viewName === 'map') {
             leftBtn.innerHTML = iconList;
-            rightBtn.classList.remove('is-hidden-slot');
         } else {
             leftBtn.innerHTML = iconPin;
-            rightBtn.classList.remove('is-hidden-slot');
             renderLists();
         }
 
         if (prevViewSnapshot !== viewName) {
             triggerNavGlide(leftBtn);
-            if (viewName !== 'player') triggerNavGlide(rightBtn);
+            triggerNavGlide(rightBtn);
             runTwoSidedFlip(outgoingView, targetView, direction, viewName);
             if (viewName === 'map') {
                 initMap();
