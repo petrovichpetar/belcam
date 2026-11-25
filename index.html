@@ -543,20 +543,24 @@
             animation: cardFlipInPrev var(--flip-half) var(--flip-ease) forwards;
         }
 
-        /* Jednokratni mirni prelaz pri promeni orijentacije uređaja */
+        /* Jednokratni mirni 3D prelaz pri promeni orijentacije uređaja u ritmu ostalih animacija */
         @keyframes orientationGlide {
             0% {
-                opacity: 0.55;
-                transform: scale(0.985);
+                opacity: 0.42;
+                transform: perspective(1200px) translate3d(0, 0, -48px) rotateY(14deg) scale(0.975);
+            }
+            50% {
+                opacity: 0.85;
+                transform: perspective(1200px) translate3d(0, 0, -18px) rotateY(4deg) scale(0.992);
             }
             100% {
                 opacity: 1;
-                transform: scale(1);
+                transform: perspective(1200px) translate3d(0, 0, 0) rotateY(0deg) scale(1);
             }
         }
         #flip-stage.is-rotating {
             will-change: transform, opacity;
-            animation: orientationGlide 0.34s var(--glide-ease) forwards;
+            animation: orientationGlide var(--flip-duration) var(--flip-ease) forwards;
         }
 
         /* --- LISTA KAMERA --- */
@@ -1770,7 +1774,7 @@
                 </div>
                 <div class="info-row">
                     <span class="info-key">Verzija aplikacije:</span>
-                    <span class="info-val" id="info-app-version">1.1.8</span>
+                    <span class="info-val" id="info-app-version">1.1.7</span>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Lista kamera:</span>
@@ -1789,7 +1793,7 @@
     </div>
 
 <script>
-    const APP_VERSION = "1.1.8";
+    const APP_VERSION = "1.1.7";
     const REMOTE_CONFIG_URL = "./cameras.json";
 
     const DEFAULT_CAMERAS = [
@@ -2252,7 +2256,7 @@
             if (mapReady && map) {
                 map.invalidateSize(true);
             }
-        }, 360);
+        }, 790);
     }
 
     if (orientationQuery.addEventListener) {
