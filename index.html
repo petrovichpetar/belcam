@@ -358,9 +358,23 @@
             z-index: 2;
         }
 
-        #flip-stage.is-animating .search-wrap {
-            position: relative !important;
-            top: 0 !important;
+        @keyframes searchBarSettle {
+            0% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            48% {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .view.flip-in-from-left .search-wrap,
+        .view.flip-in-from-right .search-wrap {
+            animation: searchBarSettle var(--flip-duration) var(--glide-ease) forwards;
         }
 
         .view.flip-out-from-right,
@@ -580,6 +594,7 @@
             gap: 6px;
             align-items: center;
             box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            transition: opacity 0.34s var(--glide-ease), transform 0.34s var(--glide-ease);
         }
         .search-input-box {
             position: relative;
@@ -1774,7 +1789,7 @@
                 </div>
                 <div class="info-row">
                     <span class="info-key">Verzija aplikacije:</span>
-                    <span class="info-val" id="info-app-version">1.1.9</span>
+                    <span class="info-val" id="info-app-version">1.1.7</span>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Lista kamera:</span>
@@ -1793,7 +1808,7 @@
     </div>
 
 <script>
-    const APP_VERSION = "1.1.9";
+    const APP_VERSION = "1.1.7";
     const REMOTE_CONFIG_URL = "./cameras.json";
 
     const DEFAULT_CAMERAS = [
