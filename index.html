@@ -34,7 +34,7 @@
             --header-h: 48px;
             --accent: #f59e0b;
             --accent-dark: #d97706;
-            --ios-flip-bg: #586371;
+            --ios-flip-bg: #1a1c1f;
             --flip-duration: 0.78s;
             --flip-half: 0.39s;
             --flip-ease: cubic-bezier(0.28, 0.22, 0.72, 0.78);
@@ -390,6 +390,11 @@
         }
 
         .view.flip-out-from-right,
+		#flip-stage.is-animating {
+            background: #1a1c1f;
+        }
+
+        .view.flip-out-from-right,
         .view.flip-in-from-right,
         .view.flip-out-from-left,
         .view.flip-in-from-left {
@@ -400,6 +405,7 @@
             backface-visibility: hidden;
             -webkit-backface-visibility: hidden;
             contain: paint;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.65);
         }
 
         .view.flip-out-from-right::after,
@@ -1800,7 +1806,7 @@
                 </div>
                 <div class="info-row">
                     <span class="info-key">Verzija aplikacije:</span>
-                    <span class="info-val" id="info-app-version">1.2.1</span>
+                    <span class="info-val" id="info-app-version">1.2.0</span>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Lista kamera:</span>
@@ -1819,7 +1825,7 @@
     </div>
 
 <script>
-    const APP_VERSION = "1.2.1";
+    const APP_VERSION = "1.2.0";
     const REMOTE_CONFIG_URL = "./cameras.json";
 
     const DEFAULT_CAMERAS = [
