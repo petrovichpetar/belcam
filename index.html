@@ -1811,7 +1811,7 @@
                     <span class="info-key">Lista kamera:</span>
                     <span class="info-val" id="info-list-source">Lokalna (43)</span>
                 </div>
-                <div id="update-box" style="display:none;margin-top:10px;padding:9px;border-radius:7px;background:rgba(245,158,11,0.14);border:1px solid rgba(245,158,11,0.45);text-align:center;">
+                <div id="update-box" style="display:none;margin-top:10px;padding:9px;border-radius:7px;background:rgba(245,158,11,0.14);border:1px solid <div id="update-box" style="display:none;margin-top:10px;padding:9px;border-radius:7px;background:rgba(245,158,11,0.14);border:1px solid rgba(245,158,11,0.45);text-align:center;">
                     <div id="update-msg" style="font-size:12px;color:#fde68a;margin-bottom:7px;font-weight:600;"></div>
                     <button id="update-apply-btn" type="button" onclick="applyAppUpdate()" style="display:inline-block;padding:7px 14px;background:#f59e0b;color:#111827;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">Ažuriraj aplikaciju sada</button>
                 </div>
@@ -3001,7 +3001,7 @@
         return false;
     }
 
-    async function applyAppUpdate() {
+async function applyAppUpdate() {
         const btn = document.getElementById('update-apply-btn');
         if (btn) {
             btn.disabled = true;
@@ -3026,19 +3026,11 @@
                     }
                 }
             }
+            // 3. Povuci svež index.html bez keša u HTTP keš pregledača
+            await fetch('./index.html?_t=' + Date.now(), { cache: 'no-store' });
 
-            // 3. Proveri i povuci svež index.html sa GitHub-a (bez keša)
-            const freshUrl = window.location.pathname + '?v=' + Date.now();
-            await fetch(freshUrl, { cache: 'no-store' });
-
-            // 4. Učitaj novu verziju aplikacije
-            window.location.replace(freshUrl);
-        } catch (err) {
-            if (btn) {
-                btn.disabled = false;
-                btn.innerText = 'Ažuriraj aplikaciju sada';
-            }
-            showToast('Greška pri ažuriranju. Proveri internet vezu.', 'error');
+            // 4. Pun reload PWA aplikacije
+            window.location.reload();
         }
     }
 
