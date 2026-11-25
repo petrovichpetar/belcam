@@ -1805,7 +1805,7 @@
                 </div>
                 <div class="info-row">
                     <span class="info-key">Verzija aplikacije:</span>
-                    <span class="info-val" id="info-app-version">1.2.2</span>
+                    <span class="info-val" id="info-app-version">1.2.3</span>
                 </div>
                 <div class="info-row">
                     <span class="info-key">Lista kamera:</span>
@@ -1813,7 +1813,7 @@
                 </div>
                 <div id="update-box" style="display:none;margin-top:10px;padding:9px;border-radius:7px;background:rgba(245,158,11,0.14);border:1px solid rgba(245,158,11,0.45);text-align:center;">
                     <div id="update-msg" style="font-size:12px;color:#fde68a;margin-bottom:7px;font-weight:600;"></div>
-                    <a id="update-download-link" href="#" target="_blank" rel="noreferrer" style="display:inline-block;padding:6px 12px;background:#f59e0b;color:#111827;border-radius:6px;font-size:12px;font-weight:700;text-decoration:none;">Preuzmi novu verziju</a>
+                    <button id="update-apply-btn" type="button" onclick="applyAppUpdate()" style="display:inline-block;padding:7px 14px;background:#f59e0b;color:#111827;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer;">Ažuriraj aplikaciju sada</button>
                 </div>
             </div>
             <div class="info-card-footer" style="display:flex;gap:8px;">
@@ -1824,7 +1824,7 @@
     </div>
 
 <script>
-    const APP_VERSION = "1.2.2";
+    const APP_VERSION = "1.2.3";
     const REMOTE_CONFIG_URL = "./cameras.json";
 
     const DEFAULT_CAMERAS = [
@@ -3001,6 +3001,47 @@
         return false;
     }
 
+    async function applyAppUpdate() {
+        const btn = document.getElementById('update-apply-btn');
+        if (btn) {
+            btn.disabled = true;
+            btn.innerText = 'Preuzimanje nove verzije...';
+        }
+        showToast('Preuzimanje nove verzije sa GitHub-a...');
+
+        try {
+            // 1. Obriši stare keševe (ako postoji Service Worker / Cache API)
+            if ('caches' in window) {
+                const keys = await caches.keys();
+                await Promise.all(keys.map(k => caches.delete(k)));
+            }
+
+            // 2. Zatraži ažuriranje Service Worker-a ako je registrovan
+            if ('serviceWorker' in navigator) {
+                const regs = await navigator.serviceWorker.getRegistrations();
+                for (const reg of regs) {
+                    await reg.update().catch(() => {});
+                    if (reg.waiting) {
+                        reg.waiting.postMessage({ type: 'SKIP_WAITING' });
+                    }
+                }
+            }
+
+            // 3. Proveri i povuci svež index.html sa GitHub-a (bez keša)
+            const freshUrl = window.location.pathname + '?v=' + Date.now();
+            await fetch(freshUrl, { cache: 'no-store' });
+
+            // 4. Učitaj novu verziju aplikacije
+            window.location.replace(freshUrl);
+        } catch (err) {
+            if (btn) {
+                btn.disabled = false;
+                btn.innerText = 'Ažuriraj aplikaciju sada';
+            }
+            showToast('Greška pri ažuriranju. Proveri internet vezu.', 'error');
+        }
+    }
+
     async function syncRemoteConfig(manual = false) {
         const sourceEl = document.getElementById('info-list-source');
         if (!REMOTE_CONFIG_URL || REMOTE_CONFIG_URL.includes('TVOJE_KORISNICKO_IME')) {
@@ -3009,11 +3050,9 @@
             return false;
         }
         try {
-            const res = await fetch(REMOTE_CONFIG_URL, {
-                cache: 'no-store',
-                headers: {
-                    'Accept': 'application/vnd.github.v3.raw'
-                }
+            const bustUrl = REMOTE_CONFIG_URL + (REMOTE_CONFIG_URL.includes('?') ? '&' : '?') + '_t=' + Date.now();
+            const res = await fetch(bustUrl, {
+                cache: 'no-store'
             });
             if (!res.ok) throw new Error('HTTP ' + res.status);
             const data = await res.json();
@@ -3032,14 +3071,15 @@
                 if (sourceEl) sourceEl.innerText = `GitHub (${cameras.length})`;
             }
 
-            if (data.appVersion && isNewerVersion(data.appVersion, APP_VERSION) && data.apkUrl) {
+            if (data.appVersion && isNewerVersion(data.appVersion, APP_VERSION)) {
                 const box = document.getElementById('update-box');
                 const msg = document.getElementById('update-msg');
-                const link = document.getElementById('update-download-link');
-                if (box && msg && link) {
+                if (box && msg) {
                     msg.innerText = `Dostupna je nova verzija ${data.appVersion}${data.releaseNotes ? ' — ' + data.releaseNotes : ''}`;
-                    link.href = data.apkUrl;
                     box.style.display = 'block';
+                }
+                if (manual) {
+                    openInfoModal();
                 }
                 showToast(`Dostupna nova verzija BelCam ${data.appVersion}!`);
             } else if (manual) {
