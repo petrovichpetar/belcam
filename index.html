@@ -3021,13 +3021,10 @@
             }
 
             // 2. Odjavi (unregister) stare Service Worker-e da ne presreću reload
-           <script>
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js', { scope: './' });
-    });
-  }
-</script>
+            if ('serviceWorker' in navigator) {
+                const registrations = await navigator.serviceWorker.getRegistrations();
+                await Promise.all(registrations.map(r => r.unregister()));
+            }
 
             // 3. Forsiraj učitavanje svežeg index.html sa novim query parametrom
             const cleanUrl = window.location.origin + window.location.pathname;
@@ -3106,7 +3103,7 @@
     // Registracija Service Worker-a za iOS / PWA podršku
     if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js').catch(() => {});
+            navigator.serviceWorker.register('./sw.js', { scope: './' }).catch(() => {});
         });
     }
 
