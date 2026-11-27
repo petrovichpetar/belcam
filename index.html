@@ -3021,10 +3021,13 @@
             }
 
             // 2. Odjavi (unregister) stare Service Worker-e da ne presreću reload
-            if ('serviceWorker' in navigator) {
-                const regs = await navigator.serviceWorker.getRegistrations();
-                await Promise.all(regs.map(reg => reg.unregister()));
-            }
+           <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js', { scope: './' });
+    });
+  }
+</script>
 
             // 3. Forsiraj učitavanje svežeg index.html sa novim query parametrom
             const cleanUrl = window.location.origin + window.location.pathname;
